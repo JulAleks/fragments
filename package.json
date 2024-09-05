@@ -16,7 +16,10 @@
   "author": "Julia Alekseev",
   "license": "UNLICENSED",
   "dependencies": {
-    "fragments": "file:"
+    "fragments": "file:",
+    "pino": "^9.4.0",
+    "pino-http": "^10.3.0",
+    "pino-pretty": "^11.2.2"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.1",
