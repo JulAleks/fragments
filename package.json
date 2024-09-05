@@ -16,5 +16,8 @@
   "license": "UNLICENSED",
   "dependencies": {
     "fragments": "file:"
+  },
+  "devDependencies": {
+    "prettier": "3.3.3"
   }
 }

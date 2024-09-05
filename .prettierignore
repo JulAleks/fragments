@@ -1,0 +1,4 @@
+# Not to format the following
+node_modules/
+package.json
+package-lock.json
