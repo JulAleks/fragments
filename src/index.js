@@ -23,6 +23,3 @@ process.on('unhandledRejection', (reason, promise) => {
 
 // Start our server
 require('./server');
-
-// Causing Lint to fail on purpose
-const unneededVariable = 'This variable is never used';
