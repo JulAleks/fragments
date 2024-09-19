@@ -1,4 +1,4 @@
-# Fragments back-end API
+# Fragments Back-end API
 
 ## Table of Contents
 
@@ -10,6 +10,7 @@
   - [Lint](#lint)
 - [Running the Server](#running-the-server)
 - [Debugging](#debugging)
+- [Testing](#testing)
 - [Notes](#notes)
 
 ## Project Setup
@@ -22,6 +23,7 @@
    ```
 
 2. **Install Dependencies**:
+
    Make sure you have Node.js installed. Then, install the required dependencies by running:
 
    ```bash
@@ -29,7 +31,9 @@
    ```
 
 3. **Setting Up Environment Variables**:
+
    Ensure you have any required environment variables set up for your project. For example:
+
    ```bash
    LOG_LEVEL=debug
    ```
@@ -115,6 +119,7 @@ npm run lint -- --fix
 ## Debugging
 
 1. **VSCode Setup**:
+
    Make sure you have the `launch.json` file set up in the `.vscode` folder. To start debugging:
 
    - Open **Run and Debug** (`Ctrl + Shift + D`).
@@ -128,12 +133,28 @@ npm run lint -- --fix
    - Open Chrome and go to `chrome://inspect`.
    - Click **Open dedicated DevTools for Node** to connect to the server’s inspector.
 
+## Testing
+
+- **Unit Testing**:
+
+  Unit tests are run locally and through GitHub Actions using Continuous Integration (CI). GitHub automatically runs tests on pull and push requests and will notify if any code breaks.
+
+  Locally, you can run `npm test` to execute the tests, or `npm run coverage` to get detailed information. Alternatively, you can open the coverage report in a browser by running:
+
+  ```bash
+  start coverage/lcov-report/index.html
+  ```
+
+- **Basic Authentication Testing**:
+
+  Basic authentication is done using a local "fake" pool of users stored in a `.htpasswd` file. This file contains hashed credentials for testing authentication routes.
+
 ## Notes
 
 - **Ports**:
 
   - The server runs on port `8080` by default.
-  - The Node.js Inspector runs on port `9229` during debugging.
 
 - **Environment Variables**:
+
   Ensure any necessary environment variables (like `LOG_LEVEL`) are properly configured when running the server or debugging.
