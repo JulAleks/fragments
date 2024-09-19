@@ -5,8 +5,8 @@ const request = require('supertest');
 const app = require('../../src/app');
 
 //testing credentials
-const userEmail = 'myawstestuser@hotmail.com';
-const password = 'myTestUser1234!';
+const userEmail = 'user1@email.com';
+const password = 'password1';
 
 describe('GET /v1/fragments', () => {
   // If the request is missing the Authorization header, it should be forbidden
