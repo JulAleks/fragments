@@ -5,23 +5,23 @@ const data = new MemoryDB();
 const metadata = new MemoryDB();
 
 // Write a fragment's metadata to memory db. Returns a Promise
-function writeFragment(fragment) {
-  return metadata.put(fragment.ownerId, fragment.id, fragment);
+async function writeFragment(fragment) {
+  return await metadata.put(fragment.ownerId, fragment.id, fragment);
 }
 
 // Read a fragment's metadata from memory db. Returns a Promise
-function readFragment(ownerId, id) {
-  return metadata.get(ownerId, id);
+async function readFragment(ownerId, id) {
+  return await metadata.get(ownerId, id);
 }
 
 // Write a fragment's data buffer to memory db. Returns a Promise
-function writeFragmentData(ownerId, id, buffer) {
-  return data.put(ownerId, id, buffer);
+async function writeFragmentData(ownerId, id, buffer) {
+  return await data.put(ownerId, id, buffer);
 }
 
 // Read a fragment's data from memory db. Returns a Promise
-function readFragmentData(ownerId, id) {
-  return data.get(ownerId, id);
+async function readFragmentData(ownerId, id) {
+  return await data.get(ownerId, id);
 }
 
 // Get a list of fragment ids/objects for the given user from memory db. Returns a Promise
@@ -38,8 +38,8 @@ async function listFragments(ownerId, expand = false) {
 }
 
 // Delete a fragment's metadata and data from memory db. Returns a Promise
-function deleteFragment(ownerId, id) {
-  return Promise.all([
+async function deleteFragment(ownerId, id) {
+  return await Promise.all([
     // Delete metadata
     metadata.del(ownerId, id),
     // Delete data
