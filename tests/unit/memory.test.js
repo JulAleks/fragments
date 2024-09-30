@@ -126,7 +126,7 @@ describe('GET /fragments', () => {
     });
 
     // Getting all fragments for missing user
-    test('Get all fragments for user with expand', async () => {
+    test('Getting all fragments for missing user', async () => {
       await expect(memoryIndex.listFragments(null, true)).rejects.toThrow(
         `primaryKey string is required, got primaryKey=${null}`
       );
