@@ -4,6 +4,7 @@
 const { randomUUID } = require('crypto');
 // Use https://www.npmjs.com/package/content-type to create/parse Content-Type headers
 const contentType = require('content-type');
+const logger = require('../logger');
 
 // Functions for working with fragment metadata/data using our DB
 const {
@@ -19,23 +20,31 @@ class Fragment {
   constructor({ id, ownerId, created, updated, type, size = 0 }) {
     // Validating that all parameters were passed
     if (!ownerId) {
+      logger.error('Fragment creation failed: ownerId is required');
       throw new Error('ownerId is required');
     }
     if (!type) {
+      logger.error('type is required');
       throw new Error('type is required');
     }
     if (typeof size !== 'number' || size < 0) {
+      logger.error('size must be a non-negative number');
       throw new Error('size must be a non-negative number');
     }
     if (!Fragment.isSupportedType(type)) {
+      logger.error(`Unsupported type: ${type}`);
       throw new Error(`Unsupported type: ${type}`);
     }
+
     this.id = id || randomUUID(); // Generate a new UUID if id is not provided
     this.ownerId = ownerId; // Assign the passed id
     this.created = created || new Date().toISOString(); // Default to current date if not provided
     this.updated = updated || this.created; // Default to created date if updated is not provided
     this.type = type; //Assign type
     this.size = size; //Assign size
+
+    logger.info(`Fragment created with ID: ${this.id}, type: ${this.type}, size: ${this.size}`); // Not logging the user ID for security
+    logger.debug(`Fragment details: ${JSON.stringify(this)}`);
   }
 
   /**
@@ -55,8 +64,10 @@ class Fragment {
    * @returns Promise<Fragment>
    */
   static async byId(ownerId, id) {
+    logger.info(`Gets a fragment ${id} for a user`); // Not logging the user ID for security
     const fragment = await readFragment(ownerId, id);
     if (!fragment) {
+      logger.error(`Fragment with id ${id} not found`);
       throw new Error(`Fragment with id ${id} not found`);
     }
     return fragment;
@@ -69,7 +80,14 @@ class Fragment {
    * @returns Promise<void>
    */
   static async delete(ownerId, id) {
-    return await deleteFragment(ownerId, id);
+    logger.info(`Deleting fragment ID: ${id}`);
+    try {
+      await deleteFragment(ownerId, id);
+      logger.info(`Fragment with ID: ${id} deleted successfully`);
+    } catch (error) {
+      logger.error(`Failed to delete fragment ID: ${id}, Error: ${error.message}`);
+      throw error;
+    }
   }
 
   /**
@@ -78,7 +96,14 @@ class Fragment {
    */
   async save() {
     this.updated = new Date().toISOString(); // Update the timestamp
-    return await writeFragment(this);
+    logger.info(`Saving fragment with ID: ${this.id}`);
+    try {
+      await writeFragment(this);
+      logger.info(`Fragment saved successfully with ID: ${this.id}`);
+    } catch (error) {
+      logger.error(`Failed to save fragment with ID: ${this.id}, Error: ${error.message}`);
+      throw error;
+    }
   }
 
   /**
@@ -86,7 +111,15 @@ class Fragment {
    * @returns Promise<Buffer>
    */
   async getData() {
-    return await readFragmentData(this.ownerId, this.id);
+    logger.info(`Retrieving data for fragment ID: ${this.id}`);
+    try {
+      const data = await readFragmentData(this.ownerId, this.id);
+      logger.debug(`Data retrieved for fragment ID: ${this.id}, size: ${data.length}`);
+      return data;
+    } catch (error) {
+      logger.error(`Failed to retrieve data for fragment ID: ${this.id}, Error: ${error.message}`);
+      throw error;
+    }
   }
 
   /**
@@ -97,11 +130,21 @@ class Fragment {
   async setData(data) {
     if (!Buffer.isBuffer(data)) {
       //If the data is not Buffer
+      logger.warn(
+        `Invalid data type for fragment ID: ${this.id}. Expected Buffer but got ${typeof data}`
+      );
       throw new Error('Data must be a Buffer');
     }
     this.size = data.length; // Update the size with the length of the buffer
     this.updated = new Date().toISOString(); // Update the timestamp
-    return await writeFragmentData(this.ownerId, this.id, data);
+    logger.info(`Setting data for fragment ID: ${this.id}, new size: ${this.size}`);
+    try {
+      await writeFragmentData(this.ownerId, this.id, data);
+      logger.info(`Data successfully set for fragment ID: ${this.id}`);
+    } catch (error) {
+      logger.error(`Failed to set data for fragment ID: ${this.id}, Error: ${error.message}`);
+      throw error;
+    }
   }
 
   /**
@@ -137,7 +180,7 @@ class Fragment {
 
   /**
    * Returns true if we know how to work with this content type
-   * @param {string} value a Content-Type value (e.g., 'text/plain' or 'text/plain: charset=utf-8')
+   * @param {string} value a Content-Type value (e.g., 'text/plain' or 'var contentType = require('content-type')')
    * @returns {boolean} true if we support this Content-Type (i.e., type/subtype)
    */
   static isSupportedType(value) {
