@@ -16,10 +16,7 @@ const testData = 'Doggies for life!';
 
 // Reusable function for making a POST request
 const authPostTest = (email, passwd, type = null, ownId, data = null) => {
-  const req = request(app)
-    .post('/v1/fragments')
-    .auth(email, passwd) // Basic Auth credentials
-    .set('x-owner-id', ownId); // Add a test owner ID
+  const req = request(app).post('/v1/fragments').auth(email, passwd); // Basic Auth credentials
 
   if (type) {
     //If there is Type assign it

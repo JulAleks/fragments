@@ -7,8 +7,7 @@ const express = require('express');
 // Importing the `rawBody` middleware from `post.js`, which is used to parse raw binary data (e.g., Buffers).
 const rawBody = require('./post').rawBody;
 const postFragment = require('./post');
-const getFragments = require('./get');
-const getFragmentById = require('./get');
+const { getFragments, getFragmentById } = require('./get');
 
 // Create a router on which to mount our API endpoints
 const router = express.Router();
