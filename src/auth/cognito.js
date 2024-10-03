@@ -3,12 +3,10 @@
 // Configure a JWT token strategy for Passport based on
 // Identity Token provided by Cognito. The token will be
 // parsed from the Authorization header (i.e., Bearer Token).
-
-const passport = require('passport');
 const BearerStrategy = require('passport-http-bearer').Strategy;
 const { CognitoJwtVerifier } = require('aws-jwt-verify');
-
 const logger = require('../logger');
+const authorize = require('./auth-middleware');
 
 // We expect AWS_COGNITO_POOL_ID and AWS_COGNITO_CLIENT_ID to be defined.
 if (!(process.env.AWS_COGNITO_POOL_ID && process.env.AWS_COGNITO_CLIENT_ID)) {
@@ -43,16 +41,16 @@ module.exports.strategy = () =>
   // in the Authorization header, then verify that with our Cognito JWT Verifier.
   new BearerStrategy(async (token, done) => {
     try {
-      // Verify this JWT
       const user = await jwtVerifier.verify(token);
       logger.debug({ user }, 'verified user token');
 
-      // Create a user, but only bother with their email
-      done(null, user.email);
+      // Send user with email to middleware for hashing
+      done(null, { email: user.email });
     } catch (err) {
       logger.error({ err, token }, 'could not verify token');
       done(null, false);
     }
   });
 
-module.exports.authenticate = () => passport.authenticate('bearer', { session: false });
+// Delegate the authorization to the authorize middleware
+module.exports.authenticate = () => authorize('bearer');
