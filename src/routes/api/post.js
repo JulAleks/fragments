@@ -17,7 +17,6 @@ const rawBody = () =>
       return Fragment.isSupportedType(type);
     },
   });
-
 const postFragment = async (req, res) => {
   try {
     // Log the request start
@@ -51,7 +50,8 @@ const postFragment = async (req, res) => {
 
     // Check if body is missing or empty
     if (!req.body || req.body.length === 0) {
-      logger.error('Missing or empty body in request');
+      const contentLength = req.headers['content-length'] || 0;
+      logger.error(`Missing or empty body in request. Content-Length: ${contentLength}`);
       return res.status(400).json({ error: 'Body is required' });
     }
 
@@ -64,6 +64,7 @@ const postFragment = async (req, res) => {
 
     // Save fragment metadata
     await fragment.save();
+    logger.debug(`Saving fragment metadata with ID: ${fragment.id}`);
 
     // Save fragment data
     await fragment.setData(req.body);
@@ -72,7 +73,7 @@ const postFragment = async (req, res) => {
     logger.info(`Fragment created successfully with ID: ${fragment.id}`);
 
     // Configuring fragment microservice's URL
-    const location = `${process.env.API_URL || `http://${req.headers.host}`}/v1/fragments/${fragment.id}`;
+    const location = `${process.env.API_URL || `http://${req.headers.host}`}/fragments/${fragment.id}`;
 
     // Respond with the created fragment
     res.status(201).location(location).json({ fragment });

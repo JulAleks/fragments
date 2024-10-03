@@ -67,6 +67,7 @@ class Fragment {
     logger.info(`Gets a fragment ${id} for a user`); // Not logging the user ID for security
     const fragment = await readFragment(ownerId, id);
     if (!fragment) {
+      console.log(`Fragment with id ${id} not found`);
       logger.error(`Fragment with id ${id} not found`);
       throw new Error(`Fragment with id ${id} not found`);
     }
