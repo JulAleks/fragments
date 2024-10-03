@@ -25,8 +25,7 @@ const fragment = {
 // Test data
 const testData = Buffer.from('Doggies for life!');
 
-//WE DISCUSSED IN CLASS THIS IS THE TEST THAT FAILS. THANK YOU!!!!!
-describe.skip('GET /v1/fragments/:id', () => {
+describe('GET /v1/fragments/:id', () => {
   let fragmentId;
 
   // Create a fragment before each test
@@ -34,11 +33,8 @@ describe.skip('GET /v1/fragments/:id', () => {
     const resPost = await request(app)
       .post('/v1/fragments')
       .auth(userEmail, password) // Basic Auth credentials
-      .set('x-owner-id', fragment.ownerId)
       .set('Content-Type', fragment.type)
       .send(testData);
-
-    console.log('POST response body:', resPost.body); // For debugging DELETE MEEEEEEEEEE!
 
     // Successful
     expect(resPost.statusCode).toBe(201);
@@ -46,20 +42,16 @@ describe.skip('GET /v1/fragments/:id', () => {
 
     // Store the fragmentId for use in tests
     fragmentId = resPost.body.fragment.id;
-    console.log('ID IS:', fragmentId); // For debugging DELETE MEEEEEEEEEE!
     expect(fragmentId).toBeDefined(); // Check that the fragment ID was returned
   });
 
   test('authenticated users get a specific fragment by ID', async () => {
-    console.log('ID HERE IS:', fragmentId);
-
-    console.log(`/v1/fragments/${fragmentId}`);
     const res = await request(app).get(`/v1/fragments/${fragmentId}`).auth(userEmail, password);
 
     // Expect a successful response
     expect(res.statusCode).toBe(200);
     expect(res.body.status).toBe('ok');
-    expect(res.body).toHaveProperty('fragment');
-    expect(res.body.fragment).toHaveProperty('id', fragmentId);
+    expect(res.body).toBeDefined();
+    expect(res.body.fragment.id).toEqual(fragmentId);
   });
 });

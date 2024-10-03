@@ -36,8 +36,7 @@ const postFragment = async (req, res) => {
       return res.status(400).json({ error: 'Unsupported media type' });
     }
 
-    // Extract ownerId from the headers
-    const ownerId = req.headers['x-owner-id'];
+    const ownerId = req.user;
 
     // Validate ownerId
     if (!ownerId) {
