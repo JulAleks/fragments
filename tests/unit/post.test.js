@@ -1,5 +1,6 @@
 const request = require('supertest');
 const app = require('../../src/app');
+const hashEmail = require('../../src/hash');
 
 // Testing credentials
 const userEmail = 'user1@email.com';
@@ -7,7 +8,7 @@ const password = 'password1';
 
 // Fragment metadata
 const fragment = {
-  ownerId: '11d4c22e42c8f61feaba154683dea407b101cfd90987dda9e342843263ca420a',
+  ownerId: hashEmail(userEmail),
   type: 'text/plain',
 };
 
