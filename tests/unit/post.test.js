@@ -7,7 +7,7 @@ const password = 'password1';
 
 // Fragment metadata
 const fragment = {
-  ownerId: '1234',
+  ownerId: '11d4c22e42c8f61feaba154683dea407b101cfd90987dda9e342843263ca420a',
   type: 'text/plain',
 };
 
@@ -23,7 +23,11 @@ const authPostTest = (email, passwd, type = null, ownId, data = null) => {
     req.set('Content-Type', type);
   }
 
-  return req.send(data); // Send data
+  if (data) {
+    req.send(data); // Send data if available
+  }
+
+  return req;
 };
 
 // Post test PKG
@@ -52,11 +56,13 @@ describe('POST /v1/fragments', () => {
 
     // Check that the response contains the fragment object
     expect(response.body).toHaveProperty('fragment');
+
+    // Check that specific fields match, ignoring any additional fields
     expect(response.body.fragment).toEqual(
       expect.objectContaining({
-        ownerId: fragment.ownerId,
-        type: fragment.type,
-        size: testData.length,
+        ownerId: fragment.ownerId, // Ensure the ownerId matches the one provided
+        type: fragment.type, // Ensure the type matches
+        size: testData.length, // Ensure the size is the length of the test data
       })
     );
   });

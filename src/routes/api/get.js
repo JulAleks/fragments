@@ -12,7 +12,6 @@ module.exports.getFragments = async (req, res) => {
 
     res.status(200).json(
       createSuccessResponse({
-        //status: 'ok', DELELELELELELE
         fragments: fragments.map((fragment) => fragment.id),
       })
     );
