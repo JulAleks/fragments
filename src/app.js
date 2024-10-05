@@ -1,4 +1,4 @@
-//app definition file: src/app.js
+//src/app.js
 
 const express = require('express');
 const cors = require('cors');
@@ -7,11 +7,11 @@ const compression = require('compression');
 const passport = require('passport');
 const authenticate = require('./auth');
 const logger = require('./logger');
+const { createErrorResponse } = require('./response'); // Importing respones
 const pino = require('pino-http')({
   // Use our default logger instance, which is already configured
   logger,
 });
-const { createErrorResponse } = require('./response'); // Importing respones
 
 // Create an express app instance we can use to attach middleware and HTTP routes
 const app = express();

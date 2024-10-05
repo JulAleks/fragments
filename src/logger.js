@@ -1,4 +1,4 @@
-//This is a logger file:  src/logger.js
+//src/logger.js
 
 // Use `info` as our standard log level if not specified
 const options = { level: process.env.LOG_LEVEL || 'info' };

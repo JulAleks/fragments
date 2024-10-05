@@ -1,4 +1,5 @@
 // src/routes/api/getFragments.js
+
 const { createSuccessResponse, createErrorResponse } = require('../../response');
 const { Fragment } = require('../../model/fragment');
 const logger = require('../../logger');
@@ -9,6 +10,7 @@ module.exports.getFragments = async (req, res) => {
   try {
     const ownerId = req.user;
     const fragments = await Fragment.byUser(ownerId);
+    logger.info('Request to get a list of fragments was submitted');
 
     res.status(200).json(
       createSuccessResponse({
@@ -30,13 +32,13 @@ module.exports.getFragmentById = async (req, res) => {
     const { id } = req.params;
     const fragment = await Fragment.byId(ownerId, id);
 
-    logger.info(`Fetching fragment ID: ${id} for owner ID: ${ownerId}`);
+    logger.info(`Fetching fragment ID: ${id}`); //not logging user id for security
 
     if (!fragment) {
+      logger.warn('Fragment not found');
       return res.status(404).json({ error: 'Fragment not found' });
     }
 
-    console.log('Fragment found:', fragment);
     res.status(200).json(createSuccessResponse({ fragment }));
   } catch (error) {
     logger.error(`Failed to fetch fragment: ${error}`);

@@ -1,3 +1,5 @@
+// src/routes/api/index.js
+
 /**
  * The main entry-point for the v1 version of the fragments API.
  */
@@ -12,12 +14,11 @@ const { getFragments, getFragmentById } = require('./get');
 // Create a router on which to mount our API endpoints
 const router = express.Router();
 
-// Routes
+// Routes - GET
 router.get('/fragments/:id', getFragmentById);
 router.get('/fragments', getFragments);
 
-// Post a fragment route. This route uses the `rawBody()` middleware to handle raw binary data in the request.
-// Use a raw body parser for POST, which will give a `Buffer` Object or `{}` at `req.body`
+// Routes - POST
 router.post('/fragments', rawBody(), postFragment);
 
 module.exports = router;

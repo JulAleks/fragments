@@ -4,7 +4,7 @@ const { createErrorResponse, createSuccessResponse } = require('../../src/respon
 
 // Define (i.e., name) the set of tests we're about to do
 describe('API Responses', () => {
-  // Write a test for calling createErrorResponse()
+  // Test for calling createErrorResponse()
   test('createErrorResponse()', () => {
     const errorResponse = createErrorResponse(404, 'not found');
     // Expect the result to look like the following
@@ -17,7 +17,7 @@ describe('API Responses', () => {
     });
   });
 
-  // Write a test for calling createSuccessResponse() with no argument
+  // Test for calling createSuccessResponse() with no argument
   test('createSuccessResponse()', () => {
     // No arg passed
     const successResponse = createSuccessResponse();
@@ -27,7 +27,7 @@ describe('API Responses', () => {
     });
   });
 
-  // Write a test for calling createSuccessResponse() with an argument
+  // Test for calling createSuccessResponse() with an argument
   test('createSuccessResponse(data)', () => {
     // Data argument included
     const data = { a: 1, b: 2 };
