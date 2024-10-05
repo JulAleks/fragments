@@ -45,7 +45,7 @@ module.exports.strategy = () =>
       logger.debug({ user }, 'verified user token');
 
       // Send user with email to middleware for hashing
-      done(null, { email: user.email });
+      done(null, user.email);
     } catch (err) {
       logger.error({ err, token }, 'could not verify token');
       done(null, false);
