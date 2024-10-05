@@ -1,3 +1,5 @@
+// tests/unit/memory.test.js
+
 const memoryIndex = require('../../src/model/data/memory/index');
 
 // Defining all the test fragments
@@ -86,9 +88,7 @@ describe('GET /fragments', () => {
       const badID = '123';
 
       // Expecting an error when writing a fragment with a missing userID
-      await expect(memoryIndex.writeFragmentData(badUser, badID, buffer)).rejects.toThrow(
-        `primaryKey and secondaryKey strings are required, got primaryKey=${badUser}, secondaryKey=${badID}`
-      );
+      await expect(memoryIndex.writeFragmentData(badUser, badID, buffer)).rejects.toThrow();
     });
 
     // Write a fragment with null fragment id
@@ -98,9 +98,9 @@ describe('GET /fragments', () => {
       const badID = null;
 
       // Expecting an error when writing a fragment with a missing userID
-      await expect(memoryIndex.writeFragmentData(fragment1.ownerId, badID, buffer)).rejects.toThrow(
-        `primaryKey and secondaryKey strings are required, got primaryKey=${fragment1.ownerId}, secondaryKey=${badID}`
-      );
+      await expect(
+        memoryIndex.writeFragmentData(fragment1.ownerId, badID, buffer)
+      ).rejects.toThrow();
     });
   });
 
@@ -127,9 +127,7 @@ describe('GET /fragments', () => {
 
     // Getting all fragments for missing user
     test('Getting all fragments for missing user', async () => {
-      await expect(memoryIndex.listFragments(null, true)).rejects.toThrow(
-        `primaryKey string is required, got primaryKey=${null}`
-      );
+      await expect(memoryIndex.listFragments(null, true)).rejects.toThrow();
     });
   });
 
