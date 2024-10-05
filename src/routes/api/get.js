@@ -40,6 +40,6 @@ module.exports.getFragmentById = async (req, res) => {
     res.status(200).json(createSuccessResponse({ fragment }));
   } catch (error) {
     logger.error(`Failed to fetch fragment: ${error}`);
-    res.status(500).json(createErrorResponse(500, error.message));
+    res.status(404).json(createErrorResponse(404, error.message));
   }
 };

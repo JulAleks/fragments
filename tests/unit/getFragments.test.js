@@ -45,6 +45,7 @@ describe('GET /v1/fragments/:id', () => {
     expect(fragmentId).toBeDefined(); // Check that the fragment ID was returned
   });
 
+  // authenticated users get a specific fragment by ID
   test('authenticated users get a specific fragment by ID', async () => {
     const res = await request(app).get(`/v1/fragments/${fragmentId}`).auth(userEmail, password);
 
@@ -53,5 +54,12 @@ describe('GET /v1/fragments/:id', () => {
     expect(res.body.status).toBe('ok');
     expect(res.body).toBeDefined();
     expect(res.body.fragment.id).toEqual(fragmentId);
+  });
+
+  test('authenticated users gets an error for a wrong fragment', async () => {
+    const res = await request(app).get(`/v1/fragments/1234`).auth(userEmail, password);
+
+    // Expect a bad request
+    expect(res.statusCode).toBe(404);
   });
 });
