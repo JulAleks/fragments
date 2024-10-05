@@ -58,10 +58,25 @@ describe('GET /v1/fragments/:id', () => {
     expect(res.body.fragment.id).toEqual(fragmentId);
   });
 
+  // Authenticated users gets an error for a wrong fragment
   test('authenticated users gets an error for a wrong fragment', async () => {
     const res = await request(app).get(`/v1/fragments/1234`).auth(userEmail, password);
 
     // Expect a bad request
     expect(res.statusCode).toBe(404);
+  });
+
+  // Should return 401 for unauthenticated users
+  test('should return 401 for unauthenticated users', async () => {
+    const res = await request(app).get('/v1/fragments');
+    expect(res.statusCode).toBe(401);
+    expect(res.body).toHaveProperty('error');
+  });
+
+  // should return 404 for non-existing fragment ID
+  test('should return 404 for non-existing fragment ID', async () => {
+    const res = await request(app).get('/v1/fragments/invalidId').auth(userEmail, password);
+    expect(res.statusCode).toBe(404);
+    expect(res.body).toHaveProperty('error');
   });
 });
