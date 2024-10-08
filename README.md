@@ -158,3 +158,7 @@ npm run lint -- --fix
 - **Environment Variables**:
 
   Ensure any necessary environment variables (like `LOG_LEVEL`) are properly configured when running the server or debugging.
+
+- **UI Access**:
+
+  To see the UI, visit: [Fragments UI](https://github.com/JulAleks/fragments-ui)
