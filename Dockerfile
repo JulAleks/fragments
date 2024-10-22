@@ -1,50 +1,51 @@
 #****************************************************#
-# Dockerfile for Fragments project by Julia Alekseev # 
-# Build and serve fragments                          #
+# Dockerfile for Fragments project by Julia Alekseev  #
+# Build and serve fragments                           #
+# Lab 6                                               #
 #****************************************************#
 
-# Specifying the base image 
-FROM node
+# Use Node.js 20.17.0 with Alpine 3.19 as the base image
+FROM node:20.18.0-alpine3.19@sha256:2d8c24d9104bda27e07dced6d7110aa728dd917dde8255d8af3678e532b339d6 AS base_img
 
-# Use node version 20.17.0
-FROM node:20.17.0
+#######################################################################
 
+# Stage 0: Dependencies Setup
+FROM base_img AS dependencies
 
+# Set maintainer and description
 LABEL maintainer="Julia Alekseev <jalekseev@myseneca.ca>"
 LABEL description="Fragments node.js microservice"
 
 
-# We default to use port 8080 in our service
+# Install curl for health check
+RUN apk add --no-cache curl
+
+# Default port 8080 
 ENV PORT=8080
 
 # Reduce npm spam when installing within Docker
-# https://docs.npmjs.com/cli/v8/using-npm/config#loglevel
 ENV NPM_CONFIG_LOGLEVEL=warn
 
-# Disable colour when run inside Docker
-# https://docs.npmjs.com/cli/v8/using-npm/config#color
+# Disable color when run inside Docker
 ENV NPM_CONFIG_COLOR=false
 
-
-# Use /app as our working directory
+# Use /app as working dir
 WORKDIR /app
 
-
-# Copy the package.json and package-lock.json
-# files into /app. NOTE: the trailing `/` on `/app/`, which tells Docker
-# that `app` is a directory and not a file.
-# Options:
-#    1) Option 1: explicit path - Copy the package.json and package-lock.json > COPY package*.json /app/
-#    2) Option 2: relative path - Copy the package.json and package-lock.json > COPY package*.json ./
-#    3) Option 3: explicit filenames - Copy the package.json and package-lock.json > COPY package.json package-lock.json ./
-
-# Explicit  path 
+# Copy package.json and package-lock.json to the container
 COPY package*.json /app/
-
 
 # Install node dependencies defined in package-lock.json
 RUN npm install
 
+#######################################################################
+
+# Stage 1: Copy Source Files and Build the Application
+
+FROM dependencies AS builder
+
+# Use /app as working dir
+WORKDIR /app
 
 # Copy src to /app/src/
 COPY ./src ./src
@@ -52,13 +53,24 @@ COPY ./src ./src
 # Copy our HTPASSWD file
 COPY ./tests/.htpasswd ./tests/.htpasswd
 
-# Start the container by running our server
-#CMD npm start
+# Change ownership of the working directory
+RUN chown -R node:node /app
 
-#TO ASK:
-CMD ["npm", "start"] 
-#to prevent Docker to by pass the command line as the OP might not properly receive operating system signals ?????
+#######################################################################
 
+# Stage 2: Run the Application
 
-# We run our service on port 8080
+FROM builder AS deploy
+
+# Expose the port for the app
 EXPOSE 8080
+
+# Switch to the node user
+USER node
+
+# Start the container by running the server
+CMD ["npm", "start"]
+
+# Health check to verify service is running
+HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
+  CMD curl --fail http://localhost:8080/ || exit 1
