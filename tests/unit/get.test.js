@@ -18,8 +18,6 @@ describe('GET /v1/fragments', () => {
 
   // Using a valid username/password pair should give a success result with a .fragments array
   test('authenticated users get a fragments array', async () => {
-    console.log('Using .htpasswd file from:', process.env.HTPASSWD_FILE);
-
     const res = await request(app).get('/v1/fragments').auth(userEmail, password);
     expect(res.statusCode).toBe(200);
     expect(res.body.status).toBe('ok');

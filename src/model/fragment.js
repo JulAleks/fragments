@@ -67,7 +67,6 @@ class Fragment {
     logger.info(`Gets a fragment ${id} for a user`); // Not logging the user ID for security
     const fragment = await readFragment(ownerId, id);
     if (!fragment) {
-      console.log(`Fragment with id ${id} not found`);
       logger.error(`Fragment with id ${id} not found`);
       throw new Error(`Fragment with id ${id} not found`);
     }
@@ -174,6 +173,17 @@ class Fragment {
     // Supported content type to be added more next labs/assignments
     const supportedFormats = {
       'text/plain': ['text/plain'],
+      'application/json': ['application/json'],
+      'text/markdown': ['text/markdown'],
+      'text/html': ['text/html'],
+      'text/csv': ['text/csv'],
+      /*
+   Currently, supports the above. Others will be added later.
+  'image/png': ['image/png'],
+  'image/jpeg': ['image/jpeg'],
+  'image/webp': ['image/webp'],
+  'image/gif': ['image/gif']
+  */
     };
     // Return types or empty array
     return supportedFormats[this.mimeType] || [];
@@ -188,6 +198,17 @@ class Fragment {
     // Supported content type to be added more next labs/assignments
     const supportedTypes = {
       'text/plain': ['text/plain'],
+      'application/json': ['application/json'],
+      'text/markdown': ['text/markdown'],
+      'text/html': ['text/html'],
+      'text/csv': ['text/csv'],
+      /*
+   Currently, supports the above. Others will be added later.
+  'image/png': ['image/png'],
+  'image/jpeg': ['image/jpeg'],
+  'image/webp': ['image/webp'],
+  'image/gif': ['image/gif']
+  */
     };
 
     // Extract the MIME type from the value

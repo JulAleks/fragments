@@ -7,12 +7,12 @@ const wait = async (ms = 10) => new Promise((resolve) => setTimeout(resolve, ms)
 
 const validTypes = [
   `text/plain`,
-  /*
-   Currently, only text/plain is supported. Others will be added later.
-
+  'application/json',
   `text/markdown`,
   `text/html`,
-  `application/json`,
+  'text/csv',
+  /*
+   Currently, supports the above. Others will be added later.
   `image/png`,
   `image/jpeg`,
   `image/webp`,
@@ -51,6 +51,30 @@ describe('Fragment class', () => {
       });
       expect(fragment.type).toEqual('text/plain; charset=utf-8');
     });
+
+    //***************************lab 6 ***********************//
+
+    test('type can be a json', () => {
+      const fragment = new Fragment({ ownerId: '1234', type: 'application/json', size: 0 });
+      expect(fragment.type).toEqual('application/json');
+    });
+
+    test('type can be a markdown', () => {
+      const fragment = new Fragment({ ownerId: '1234', type: 'text/markdown', size: 0 });
+      expect(fragment.type).toEqual('text/markdown');
+    });
+
+    test('type can be a html', () => {
+      const fragment = new Fragment({ ownerId: '1234', type: 'text/html', size: 0 });
+      expect(fragment.type).toEqual('text/html');
+    });
+
+    test('type can be a csv', () => {
+      const fragment = new Fragment({ ownerId: '1234', type: 'text/csv', size: 0 });
+      expect(fragment.type).toEqual('text/csv');
+    });
+
+    //****************************************************//
 
     test('size gets set to 0 if missing', () => {
       const fragment = new Fragment({ ownerId: '1234', type: 'text/plain' });
@@ -117,11 +141,14 @@ describe('Fragment class', () => {
       expect(Date.parse(fragment.updated)).not.toBeNaN();
     });
   });
-
+  //***************************lab 6 - updated***********************//
   describe('isSupportedType()', () => {
     test('common text types are supported, with and without charset', () => {
       expect(Fragment.isSupportedType('text/plain')).toBe(true);
       expect(Fragment.isSupportedType('text/plain; charset=utf-8')).toBe(true);
+      expect(Fragment.isSupportedType('text/markdown')).toBe(true);
+      expect(Fragment.isSupportedType('application/json')).toBe(true);
+      expect(Fragment.isSupportedType('text/html')).toBe(true);
     });
 
     test('other types are not supported', () => {
@@ -194,7 +221,14 @@ describe('Fragment class', () => {
       await wait();
       await fragment.save();
       const fragment2 = await Fragment.byId(ownerId, fragment.id);
-      expect(Date.parse(fragment2.updated)).toBeGreaterThan(Date.parse(modified1));
+      await expect(Date.parse(fragment2.updated)).toBeGreaterThan(Date.parse(modified1));
+    });
+
+    test('save() should throw an error during save process due to invalid condition', async () => {
+      const ownerId = '1234'; // Valid ownerId
+      const fragment = new Fragment({ ownerId, type: 'text/plain', size: 0 });
+      fragment.ownerId = null;
+      await expect(fragment.save()).rejects.toThrow();
     });
 
     test('setData() updates the updated date/time of a fragment', async () => {
@@ -253,6 +287,14 @@ describe('Fragment class', () => {
 
       await Fragment.delete('1234', fragment.id);
       expect(() => Fragment.byId('1234', fragment.id)).rejects.toThrow();
+    });
+
+    test('should fail to delete a non-existent fragment', async () => {
+      const ownerId = '1234';
+      const invalidFragmentId = 'non-existent-id';
+
+      // Expect the delete method to throw an error because the fragment doesn't exist
+      await expect(Fragment.delete(ownerId, invalidFragmentId)).rejects.toThrow();
     });
   });
 });

@@ -70,6 +70,124 @@ describe('POST /v1/fragments', () => {
     );
   });
 
+  ////////////LAB 6////////////
+  // Should create a JSON and return the created fragment data
+  test('Should create a JSON fragment and return the created fragment data', async () => {
+    // Fragment metadata
+    const fragmentJSON = {
+      ownerId: hashEmail(userEmail),
+      type: 'application/json',
+    };
+
+    const JSONData = `{
+  "Name": "Bubbles",
+  "Breed": "Cattle Dog",
+  "Age": 9
+}`;
+    const jsonDataString = JSON.stringify(JSONData);
+    const response = await authPostTest(
+      userEmail,
+      password,
+      fragmentJSON.type,
+      fragmentJSON.ownerId,
+      jsonDataString
+    );
+
+    // Check that the status code is 201 Created
+    expect(response.statusCode).toBe(201);
+
+    // Check that the response contains the fragment object
+    expect(response.body).toHaveProperty('fragment');
+
+    // Check that specific fields match, ignoring any additional fields
+    expect(response.body.fragment).toEqual(
+      expect.objectContaining({
+        ownerId: fragmentJSON.ownerId, // Ensure the ownerId matches the one provided
+        type: fragmentJSON.type, // Ensure the type matches
+        size: jsonDataString.length, // Ensure the size is the length of the test data
+      })
+    );
+  });
+
+  test('Should create an HTML fragment and return the created fragment data', async () => {
+    // Fragment metadata
+    const fragmentHTML = {
+      ownerId: hashEmail(userEmail),
+      type: 'text/html',
+    };
+
+    const htmlData = '<div><h1>Bubbles for Life!</h1></div>';
+
+    const response = await authPostTest(
+      userEmail,
+      password,
+      'text/html',
+      fragmentHTML.ownerId,
+      htmlData
+    );
+
+    // Check that the status code is 201 Created
+    expect(response.statusCode).toBe(201);
+
+    // Check that the response contains the fragment object
+    expect(response.body).toHaveProperty('fragment');
+
+    // Check that specific fields match, ignoring any additional fields
+    expect(response.body.fragment).toEqual(
+      expect.objectContaining({
+        ownerId: fragmentHTML.ownerId, // Ensure the ownerId matches the one provided
+        type: 'text/html', // Ensure the type is HTML
+        size: htmlData.length, // Ensure the size is the length of the HTML data
+      })
+    );
+  });
+
+  test('Should create an Markdown fragment and return the created fragment data', async () => {
+    // Fragment metadata
+    const fragmentMD = {
+      ownerId: hashEmail(userEmail),
+      type: 'text/markdown',
+    };
+
+    const markdownData = `
+    # Portuguese Cattle Dogs are vigorous animals of pleasant overall appearance, sometimes with a rather striking color. Their gait is free, easy and energetic.
+      Loyal and docile with people they know, Portuguese Cattle Dogs do a great job protecting livestock from attacks by the many wolves that still prowl the mountains of northern Portugal.
+
+    ## Breed Specifics
+    - **Country**: Portugal  
+    - **Size category**: Large  
+    - **Avg life expectancy**: 11-13 years
+
+    ## Traits
+    Confident / Calm / Gentle / Resilient / Intelligent / Loyal
+    `;
+
+    const response = await authPostTest(
+      userEmail,
+      password,
+      'text/markdown', // Specify the content type as HTML
+      fragmentMD.ownerId,
+      markdownData
+    );
+
+    // Check that the status code is 201 Created
+    expect(response.statusCode).toBe(201);
+
+    // Check that the response contains the fragment object
+    expect(response.body).toHaveProperty('fragment');
+
+    // Check that specific fields match, ignoring any additional fields
+    expect(response.body.fragment).toEqual(
+      expect.objectContaining({
+        ownerId: fragmentMD.ownerId, // Ensure the ownerId matches the one provided
+        type: 'text/markdown', // Ensure the type is HTML
+        size: markdownData.length, // Ensure the size is the length of the HTML data
+      })
+    );
+  });
+
+  ///////////////////////////////////////////////////////////////////////
+
   // Should return 400 for unsupported content type 'app/bad-type'
   test('Should return 400 for unsupported content type', async () => {
     const response = await authPostTest(

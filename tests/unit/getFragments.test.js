@@ -25,9 +25,9 @@ const fragment = {
 };
 
 // Test data
-const testData = Buffer.from('Doggies for life!');
+const testData = 'Doggies for life!';
 
-describe('GET /v1/fragments/:id', () => {
+describe('For TEXT: GET /v1/fragments/:id', () => {
   let fragmentId;
 
   // Create a fragment before each test
@@ -78,5 +78,52 @@ describe('GET /v1/fragments/:id', () => {
     const res = await request(app).get('/v1/fragments/invalidId').auth(userEmail, password);
     expect(res.statusCode).toBe(404);
     expect(res.body).toHaveProperty('error');
+  });
+});
+
+/////////////LAB 6//////////////////////
+// Fragment metadata
+const fragmentJSON = {
+  ownerId: userEmail,
+  type: 'application/json',
+};
+
+const JSONData = `{
+  "Name": "Bubbles",
+  "Breed": "Cattle Dog",
+  "Age": 9
+}`;
+
+describe('FOR JASON: GET /v1/fragments/:id', () => {
+  let fID;
+  let fType;
+  // Create a fragment before each test
+  beforeEach(async () => {
+    const resPost = await request(app)
+      .post('/v1/fragments')
+      .auth(userEmail, password)
+      .set('Content-Type', fragmentJSON.type)
+      .send(JSONData);
+
+    // Successful
+    expect(resPost.statusCode).toBe(201);
+    expect(resPost.body).toHaveProperty('fragment');
+
+    fID = resPost.body.fragment.id;
+    fType = resPost.body.fragment.type;
+    expect(fID).toBeDefined(); // Check that the fragment ID was returned
+    expect(fType).toBeDefined(); // Check that the fragment type was returned
+  });
+
+  // authenticated users get a specific fragment by ID
+  test('authenticated users get a specific fragment by ID', async () => {
+    const res = await request(app).get(`/v1/fragments/${fID}`).auth(userEmail, password);
+
+    // Expect a successful response
+    expect(res.statusCode).toBe(200);
+    expect(res.body.status).toBe('ok');
+    expect(res.body).toBeDefined();
+    expect(res.body.fragment.id).toEqual(fID);
+    expect(res.body.fragment.type).toEqual(fType);
   });
 });
