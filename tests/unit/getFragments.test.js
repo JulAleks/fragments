@@ -94,7 +94,7 @@ const JSONData = `{
   "Age": 9
 }`;
 
-describe('FOR JASON: GET /v1/fragments/:id', () => {
+describe('FOR JSON: GET /v1/fragments/:id', () => {
   let fID;
   let fType;
   // Create a fragment before each test
