@@ -165,7 +165,7 @@ describe('POST /v1/fragments', () => {
     const response = await authPostTest(
       userEmail,
       password,
-      'text/markdown', // Specify the content type as HTML
+      'text/markdown', // Specify the content type as markdown
       fragmentMD.ownerId,
       markdownData
     );
