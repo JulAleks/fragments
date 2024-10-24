@@ -4,7 +4,7 @@
 # Lab 6                                               #
 #****************************************************#
 
-# Use Node.js 20.17.0 with Alpine 3.19 as the base image
+# Use Node.js 20.18.0 with Alpine 3.19 as the base image
 FROM node:20.18.0-alpine3.19@sha256:2d8c24d9104bda27e07dced6d7110aa728dd917dde8255d8af3678e532b339d6 AS base_img
 
 #######################################################################
