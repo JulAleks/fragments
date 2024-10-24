@@ -137,6 +137,7 @@ class Fragment {
     }
     this.size = data.length; // Update the size with the length of the buffer
     this.updated = new Date().toISOString(); // Update the timestamp
+    await this.save();
     logger.info(`Setting data for fragment ID: ${this.id}, new size: ${this.size}`);
     try {
       await writeFragmentData(this.ownerId, this.id, data);

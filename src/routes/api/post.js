@@ -34,7 +34,7 @@ const postFragment = async (req, res) => {
     // Validate content type
     if (!Fragment.isSupportedType(type)) {
       logger.error(`Unsupported content type: ${type}`);
-      return res.status(400).json({ error: 'Unsupported media type' });
+      return res.status(415).json({ error: 'Unsupported media type' });
     }
 
     const ownerId = req.user;

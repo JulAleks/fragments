@@ -188,8 +188,8 @@ describe('POST /v1/fragments', () => {
 
   ///////////////////////////////////////////////////////////////////////
 
-  // Should return 400 for unsupported content type 'app/bad-type'
-  test('Should return 400 for unsupported content type', async () => {
+  // Should return 415 for unsupported content type 'app/bad-type'
+  test('Should return 415 for unsupported content type', async () => {
     const response = await authPostTest(
       userEmail,
       password,
@@ -199,16 +199,16 @@ describe('POST /v1/fragments', () => {
     );
 
     // Expect 400 Bad Request for unsupported media type
-    expect(response.statusCode).toBe(400);
+    expect(response.statusCode).toBe(415);
     expect(response.body).toHaveProperty('error', 'Unsupported media type');
   });
 
-  // Should return 400 if Content-Type header (Content-Type) is missing
-  test('Should return 400 if Content-Type header is missing', async () => {
+  // Should return 415 if Content-Type header (Content-Type) is missing
+  test('Should return 415 if Content-Type header is missing', async () => {
     const response = await authPostTest(userEmail, password, null, fragment.ownerId, testData); // Missing type
 
     // Expect 400 Bad Request for missing Content-Type
-    expect(response.statusCode).toBe(400);
+    expect(response.statusCode).toBe(415);
   });
 
   // Should return 400 if body is missing
