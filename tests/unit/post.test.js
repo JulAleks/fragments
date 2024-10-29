@@ -180,7 +180,7 @@ describe('POST /v1/fragments', () => {
     expect(response.body.fragment).toEqual(
       expect.objectContaining({
         ownerId: fragmentMD.ownerId, // Ensure the ownerId matches the one provided
-        type: 'text/markdown', // Ensure the type is HTML
+        type: 'text/markdown', // Ensure the type is markdown
         size: markdownData.length, // Ensure the size is the length of the HTML data
       })
     );

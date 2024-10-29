@@ -18,7 +18,7 @@ LABEL description="Fragments node.js microservice"
 
 
 # Install curl for health check
-RUN apk add --no-cache curl
+RUN apk add --no-cache curl=8.10.1-r0
 
 # Default port 8080 
 ENV PORT=8080
