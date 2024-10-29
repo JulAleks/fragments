@@ -48,7 +48,7 @@ module.exports.getFragmentById = async (req, res) => {
 };
 
 /**
- * Get metadata and content for a specific fragment by ID for the current user
+ * Get data and content for a specific fragment by ID for the current user
  */
 module.exports.getFragmentDataById = async (req, res) => {
   try {
@@ -57,7 +57,7 @@ module.exports.getFragmentDataById = async (req, res) => {
 
     const fragment = await Fragment.byId(ownerId, id);
 
-    logger.info(`Fetching fragment and metadata for ID: ${id}`);
+    logger.info(`Fetching fragment and data for ID: ${id}`);
 
     if (!fragment) {
       logger.warn('Fragment not found');
@@ -78,7 +78,7 @@ module.exports.getFragmentDataById = async (req, res) => {
       type: fragment.type,
       createdDate: fragment.createdDate,
       size: fragment.size,
-      data: fragment.data, // Ensure fragment data is included
+      data: fragment.data,
     };
 
     res.status(200).json({ status: 'ok', fragment: fetchedFragment });
