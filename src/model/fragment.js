@@ -42,7 +42,7 @@ class Fragment {
     this.updated = updated || this.created; // Default to created date if updated is not provided
     this.type = type; //Assign type
     this.size = size; //Assign size
-
+    this.save();
     logger.info(`Fragment created with ID: ${this.id}, type: ${this.type}, size: ${this.size}`); // Not logging the user ID for security
     logger.debug(`Fragment details: ${JSON.stringify(this)}`);
   }
