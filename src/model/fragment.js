@@ -174,10 +174,11 @@ class Fragment {
     // Supported content type to be added more next labs/assignments
     const supportedFormats = {
       'text/plain': ['text/plain'],
-      'application/json': ['application/json'],
       'text/markdown': ['text/markdown'],
       'text/html': ['text/html'],
       'text/csv': ['text/csv'],
+      'application/json': ['application/json'],
+      'application/yaml': ['application/yaml'],
       /*
    Currently, supports the above. Others will be added later.
   'image/png': ['image/png'],
@@ -199,10 +200,11 @@ class Fragment {
     // Supported content type to be added more next labs/assignments
     const supportedTypes = {
       'text/plain': ['text/plain'],
-      'application/json': ['application/json'],
       'text/markdown': ['text/markdown'],
       'text/html': ['text/html'],
       'text/csv': ['text/csv'],
+      'application/json': ['application/json'],
+      'application/yaml': ['application/yaml'],
       /*
    Currently, supports the above. Others will be added later.
   'image/png': ['image/png'],
