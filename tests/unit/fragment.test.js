@@ -52,8 +52,6 @@ describe('Fragment class', () => {
       expect(fragment.type).toEqual('text/plain; charset=utf-8');
     });
 
-    //***************************lab 6 ***********************//
-
     test('type can be a json', () => {
       const fragment = new Fragment({ ownerId: '1234', type: 'application/json', size: 0 });
       expect(fragment.type).toEqual('application/json');
@@ -73,8 +71,6 @@ describe('Fragment class', () => {
       const fragment = new Fragment({ ownerId: '1234', type: 'text/csv', size: 0 });
       expect(fragment.type).toEqual('text/csv');
     });
-
-    //****************************************************//
 
     test('size gets set to 0 if missing', () => {
       const fragment = new Fragment({ ownerId: '1234', type: 'text/plain' });
@@ -141,7 +137,7 @@ describe('Fragment class', () => {
       expect(Date.parse(fragment.updated)).not.toBeNaN();
     });
   });
-  //***************************lab 6 - updated***********************//
+
   describe('isSupportedType()', () => {
     test('common text types are supported, with and without charset', () => {
       expect(Fragment.isSupportedType('text/plain')).toBe(true);

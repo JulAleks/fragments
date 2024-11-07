@@ -10,7 +10,14 @@ const { convertFragment } = require('../../../src/utils/conversion');
 module.exports.getFragments = async (req, res) => {
   try {
     const ownerId = req.user;
-    const fragments = await Fragment.byUser(ownerId);
+    const { expand } = req.query;
+
+    let fragments;
+    if (expand === '1') {
+      fragments = await Fragment.byUser(ownerId, true);
+    } else {
+      fragments = await Fragment.byUser(ownerId);
+    }
     logger.info('Request to get a list of fragments was submitted');
 
     res.status(200).json(
@@ -62,7 +69,7 @@ module.exports.getFragmentById = async (req, res) => {
                   id: fragment.id,
                   type: fragment.type,
                 },
-                data: JSON.parse(fData.toString()), // Ensure this is the JSON data
+                data: JSON.parse(fData.toString()),
               })
             );
           } else if (fSubtype === 'yaml') {
