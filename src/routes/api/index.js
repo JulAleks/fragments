@@ -15,8 +15,16 @@ const { getFragments, getFragmentById, getFragmentDataById } = require('./get');
 const router = express.Router();
 
 // Routes - GET
+
+//GET /fragments/:id/info returns an existing fragment's metadata
 router.get('/fragments/:id/info', getFragmentDataById);
+
+//GET /fragments/:id returns an existing fragment's data with the expected Content-Type.
+//GET /fragments/:id.ext returns an existing fragment's data converted to a supported type
 router.get('/fragments/:id', getFragmentById);
+
+//GET /fragments returns fragment list for an authenticated user
+//GET /fragments?expand=1 returns expanded fragment metadata for an authenticated user
 router.get('/fragments', getFragments);
 
 // Routes - POST
