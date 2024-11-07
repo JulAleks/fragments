@@ -61,6 +61,7 @@ module.exports.getFragmentById = async (req, res) => {
 
       switch (fType) {
         case 'application':
+          logger.info('Request to convert application received');
           if (fSubtype === 'json') {
             res.setHeader('Content-Type', 'application/json');
             return res.status(200).json(
@@ -76,12 +77,14 @@ module.exports.getFragmentById = async (req, res) => {
             res.setHeader('Content-Type', 'application/yaml');
             return res.status(200).send(fData.toString());
           } else {
+            logger.error(`Unsupported application subtype: ${fSubtype}`);
             return createErrorResponse(
               res.status(415).json({ error: `Unsupported application subtype: ${fSubtype}` })
             );
           }
 
         case 'text':
+          logger.info('Request to convert text received');
           if (fSubtype === 'plain') {
             res.setHeader('Content-Type', 'text/plain');
             return res.status(200).send(fData.toString());
@@ -96,12 +99,19 @@ module.exports.getFragmentById = async (req, res) => {
             res.setHeader('Content-Type', 'text/csv');
             return res.status(200).send(fData.toString());
           } else {
+            logger.error(`Unsupported text subtype: ${fSubtype}`);
             return createErrorResponse(
               res.status(415).json({ error: `Unsupported text subtype: ${fSubtype}` })
             );
           }
-
+        // Placeholder for a future case
+        case 'image':
+          logger.info('Request to convert image received');
+          // TODO: Implement this case in the future
+          //image/jpeg > image/webp > image/avif> image/gif
+          break;
         default:
+          logger.info('Request to convert format received, returning raw data');
           res.setHeader('Content-Type', fragment.mimeType);
           return res.status(200).send(fData);
       }
@@ -109,6 +119,7 @@ module.exports.getFragmentById = async (req, res) => {
 
     // Handle conversion if an extension is provided
     if (!Fragment.isSupportedType(fragment.mimeType)) {
+      logger.error(`Cannot convert from ${fragment.mimeType} to ${ext}`);
       return createErrorResponse(
         res.status(415).json({ error: `Cannot convert from ${fragment.mimeType} to ${ext}` })
       );
@@ -119,9 +130,8 @@ module.exports.getFragmentById = async (req, res) => {
     res.setHeader('Content-Type', newMimeType);
     return res.status(200).send(convertedData);
   } catch (error) {
-    return createErrorResponse(
-      res.status(500).json({ error: 'Server error', message: error.message })
-    );
+    logger.error('Server error', error.message);
+    res.status(500).json(createErrorResponse(500, error.message));
   }
 };
 
