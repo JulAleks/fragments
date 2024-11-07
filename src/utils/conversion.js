@@ -5,13 +5,14 @@ const yaml = require('js-yaml');
 const logger = require('../logger');
 /**
 Converts fragment data based on the requested extension and MIME type.
- */
+**/
 const convertFragment = (data, mimeType, extension) => {
   let convertedData;
   let newMimeType;
 
   try {
     switch (extension) {
+      //if extantion that was passed html
       case 'html':
         if (mimeType === 'text/markdown') {
           const markdownContent = data.toString(); // Convert Buffer to string if needed
@@ -29,6 +30,7 @@ const convertFragment = (data, mimeType, extension) => {
           newMimeType = 'text/html';
         }
         break;
+      //if extantion that was passed csv
       case 'csv':
         if (mimeType === 'text/csv') {
           // Return original CSV data
@@ -36,14 +38,14 @@ const convertFragment = (data, mimeType, extension) => {
           newMimeType = 'text/csv';
         }
         break;
-
+      //if extantion that was passed md
       case 'md':
         if (mimeType === 'text/markdown') {
           convertedData = data.toString(); // Return the original Markdown
           newMimeType = 'text/markdown'; // Set new type
         }
         break;
-
+      //if extantion that was passed txt
       case 'txt':
         if (mimeType.startsWith('text/')) {
           // Return as plain text if already a text type
@@ -60,6 +62,7 @@ const convertFragment = (data, mimeType, extension) => {
           newMimeType = 'text/plain';
         }
         break;
+      //if extantion that was passed json
       case 'json':
         if (mimeType === 'application/json') {
           convertedData = JSON.parse(data.toString()); // Convert JSON string to object
@@ -74,11 +77,12 @@ const convertFragment = (data, mimeType, extension) => {
           newMimeType = 'application/json';
         }
         if (mimeType === 'application/yaml') {
-          const jsonData = yaml.load(data.toString()); // Make sure you are using the correct yaml method
+          const jsonData = yaml.load(data.toString());
           convertedData = jsonData;
           newMimeType = 'application/json';
         }
         break;
+      //if extantion that was passed yaml/yml
       case 'yaml':
       case 'yml':
         if (mimeType === 'application/json') {
@@ -91,6 +95,22 @@ const convertFragment = (data, mimeType, extension) => {
           convertedData = data.toString();
           newMimeType = 'application/yaml';
         }
+        break;
+      //to add in future steps
+      case 'png':
+        //TO DO .png, .jpg, .webp, .gif, .avif
+        break;
+      case 'jpeg':
+        //TO DO .png, .jpg, .webp, .gif, .avif
+        break;
+      case 'webp':
+        //TO DO .png, .jpg, .webp, .gif, .avif
+        break;
+      case 'avif':
+        //TO DO .png, .jpg, .webp, .gif, .avif
+        break;
+      case 'gif':
+        //TO DO .png, .jpg, .webp, .gif, .avif
         break;
     }
 
