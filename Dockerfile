@@ -1,7 +1,7 @@
 #****************************************************#
-# Dockerfile for Fragments project by Julia Alekseev  #
-# Build and serve fragments                           #
-# Lab 6                                               #
+# Dockerfile for Fragments project by Julia Alekseev #
+# Build Fragments and serve fragments                #
+# Assignment 2                                       #
 #****************************************************#
 
 # Use Node.js 20.18.0 with Alpine 3.19 as the base image
@@ -13,8 +13,8 @@ FROM node:20.18.0-alpine3.19@sha256:2d8c24d9104bda27e07dced6d7110aa728dd917dde82
 FROM base_img AS dependencies
 
 # Set maintainer and description
-LABEL maintainer="Julia Alekseev <jalekseev@myseneca.ca>"
-LABEL description="Fragments node.js microservice"
+LABEL maintainer="Julia Alekseev <jalekseev@myseneca.ca>" \
+description="Fragments node.js microservice"
 
 
 # Install curl for health check
@@ -24,11 +24,9 @@ RUN apk add --no-cache curl=8.9.1-r1
 # Default port 8080 
 ENV PORT=8080
 
-# Reduce npm spam when installing within Docker
-ENV NPM_CONFIG_LOGLEVEL=warn
-
-# Disable color when run inside Docker
-ENV NPM_CONFIG_COLOR=false
+# Set environment variables to reduce npm spam and disable color
+ENV NPM_CONFIG_LOGLEVEL=warn \
+    NPM_CONFIG_COLOR=false
 
 # Use /app as working dir
 WORKDIR /app
@@ -37,7 +35,7 @@ WORKDIR /app
 COPY package*.json /app/
 
 # Install node dependencies defined in package-lock.json
-RUN npm install
+RUN npm ci
 
 #######################################################################
 
