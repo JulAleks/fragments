@@ -2,6 +2,7 @@
 # Dockerfile for Fragments project by Julia Alekseev #
 # Build Fragments and serve fragments                #
 # Assignment 2                                       #
+# Last updated on: 2024-11-08                        #
 #****************************************************#
 
 # Use Node.js 20.18.0 with Alpine 3.19 as the base image
@@ -37,7 +38,7 @@ COPY package*.json /app/
 # Install node dependencies defined in package-lock.json
 RUN npm ci
 
-#######################################################################
+######################################################################
 
 # Stage 1: Copy Source Files and Build the Application
 
