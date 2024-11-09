@@ -5,7 +5,7 @@
 #
 # To create a new tag, we also need to update the package.json version:
 #
-# $ npm version 0.5.0
+# $ npm version 0.8.0
 #
 # This will update `version` in package.json to `0.5.0` and create a new
 # tag, `v0.5.0` in git. We'll then use this tag (i.e., `v0.5.0`) to tag
