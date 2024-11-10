@@ -85,5 +85,7 @@ const postFragment = async (req, res) => {
 };
 
 // Export both rawBody and postFragment
-module.exports = postFragment;
-module.exports.rawBody = rawBody;
+module.exports = {
+  postFragment,
+  rawBody,
+};
