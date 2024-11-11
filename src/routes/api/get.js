@@ -21,59 +21,6 @@ module.exports.getFragments = async (req, res) => {
 /**
  * Get a specific fragment by ID for the current user
  */
-/*module.exports.getFragmentById = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const userID = req.user;
-
-    console.log('Original ID from request:', id);
-    console.log('User ID:', userID);
-
-    // Split the raw ID into the actual ID and extension
-    const [newID, ext] = id.split('.');
-    console.log('ID after splitting:', newID);
-    console.log('Extension after splitting:', ext);
-
-    // Validate the ID format (if it should be a UUID, for example)
-    const uuidRegex =
-      /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
-    if (!uuidRegex.test(newID)) {
-      console.log('Invalid ID format:', newID);
-      return res.status(400).json(createErrorResponse(400, `Invalid ID format: ${newID}`));
-    }
-
-    // Attempt to retrieve the fragment
-    let fragment = await Fragment.byId(userID, newID);
-    console.log('Retrieved fragment:', fragment);
-
-    if (!fragment) {
-      console.log(`Fragment with ID ${newID} not found`);
-      return res.status(404).json(createErrorResponse(404, `Fragment with ID ${newID} not found`));
-    }
-
-    // Handle info request (if the path ends with '/info')
-    if (req.path.endsWith('/info')) {
-      return res.status(200).json(createSuccessResponse({ metadata: fragment }));
-    }
-
-    // Fetch the fragment's raw data
-    const fData = await fragment.getData();
-
-    // Handle conversion if an extension is provided
-    if (ext) {
-      const { convertedData, newMimeType } = convertFragment(fData, fragment.mimeType, ext);
-      res.setHeader('Content-Type', newMimeType);
-      return res.status(200).send(convertedData);
-    }
-
-    // Return the fragment's data if no conversion is needed
-    res.setHeader('Content-Type', fragment.mimeType);
-    return res.status(200).send(fData);
-  } catch (error) {
-    logger.error('Server error:', error.message);
-    return res.status(500).json(createErrorResponse(500, error.message));
-  }
-};*/
 module.exports.getFragmentById = async (req, res) => {
   const tempID = req.params.id; // Get the raw id passed
   const userID = req.user; // Get user
