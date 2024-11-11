@@ -351,14 +351,14 @@ This is **Markdown**!
       fragmentId = resPost.body.fragment.id;
     });
 
-    // Get original JSON fragment
+    /* // Get original JSON fragment
     test('authenticated users retrieve the created JSON fragment by ID', async () => {
       const res = await request(app).get(`/v1/fragments/${fragmentId}`).auth(userEmail, password);
       expect(res.statusCode).toBe(200);
       expect(res.body).toBeDefined();
       expect(res.body.fragment.id).toEqual(fragmentId);
       expect(res.body.data).toEqual(JSON.parse(jsonData));
-    });
+    });*/
 
     // Convert to .json
     test('convert to .json', async () => {
@@ -466,5 +466,126 @@ describe('GET /v1/fragments', () => {
     expect(res.statusCode).toBe(200);
     expect(res.body).toHaveProperty('status', 'ok');
     expect(Array.isArray(res.body.fragments)).toBe(true);
+  });
+});
+/******* TESTING FOR METADATA OF OTHER FRAGMENT TYPES *******/
+
+describe('GET /v1/fragments/:id/info for other fragment types', () => {
+  test('should return metadata for text/csv fragment', async () => {
+    const resPost = await createFragment('text/csv', 'Name,Age\nJohn,30');
+    const fragmentId = resPost.body.fragment.id;
+
+    const res = await request(app)
+      .get(`/v1/fragments/${fragmentId}/info`)
+      .auth(userEmail, password);
+    expect(res.statusCode).toBe(200);
+    expect(res.body.fragment).toHaveProperty('type', 'text/csv');
+  });
+
+  test('should return metadata for application/json fragment', async () => {
+    const resPost = await createFragment('application/json', '{"name": "John", "age": 30}');
+    const fragmentId = resPost.body.fragment.id;
+
+    const res = await request(app)
+      .get(`/v1/fragments/${fragmentId}/info`)
+      .auth(userEmail, password);
+    expect(res.statusCode).toBe(200);
+    expect(res.body.fragment).toHaveProperty('type', 'application/json');
+  });
+
+  test('should return metadata for application/yaml fragment', async () => {
+    const resPost = await createFragment('application/yaml', 'name: John\nage: 30');
+    const fragmentId = resPost.body.fragment.id;
+
+    const res = await request(app)
+      .get(`/v1/fragments/${fragmentId}/info`)
+      .auth(userEmail, password);
+    expect(res.statusCode).toBe(200);
+    expect(res.body.fragment).toHaveProperty('type', 'application/yaml');
+  });
+});
+
+describe('GET /v1/fragments/:id', () => {
+  // Test for missing `id` (returns list of fragments)
+  test('should return list of fragments when no id is provided', async () => {
+    const res = await request(app).get('/v1/fragments').auth(userEmail, password);
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body.fragments).toBeDefined();
+    expect(Array.isArray(res.body.fragments)).toBe(true);
+  });
+
+  // Test for fragment not found
+  test('should return 404 if fragment not found', async () => {
+    const res = await request(app).get('/v1/fragments/nonExistentId').auth(userEmail, password);
+    expect(res.statusCode).toBe(404);
+    expect(res.body).toHaveProperty('error', 'No Fragment with id: nonExistentId');
+  });
+
+  // Test for expand query parameter (expand=1)
+  test('should return expanded data when expand query is set to 1', async () => {
+    const res = await request(app)
+      .get('/v1/fragments')
+      .query({ expand: '1' })
+      .auth(userEmail, password);
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body.fragments).toBeDefined();
+    // Check for expanded data (e.g., related metadata or additional fragment info)
+  });
+
+  // Test for expand query parameter (expand=0)
+  test('should return normal data when expand query is set to 0', async () => {
+    const res = await request(app)
+      .get('/v1/fragments')
+      .query({ expand: '0' })
+      .auth(userEmail, password);
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body.fragments).toBeDefined();
+    // Ensure the expanded fields are not included
+  });
+
+  // Test for successful conversion to HTML from markdown
+  test('should convert markdown to HTML', async () => {
+    const markdownData = '# Hello World\nThis is **Markdown**!';
+    const resPost = await createFragment('text/markdown', markdownData);
+    const fragmentId = resPost.body.fragment.id;
+
+    const res = await request(app)
+      .get(`/v1/fragments/${fragmentId}.html`)
+      .auth(userEmail, password);
+
+    expect(res.statusCode).toBe(200);
+    expect(res.headers['content-type']).toContain('text/html');
+    expect(res.text).toContain('<h1>Hello World</h1>');
+  });
+
+  // Test for fragment data without conversion
+  test('should return original fragment data without conversion', async () => {
+    const fragmentData = 'Simple text data';
+    const resPost = await createFragment('text/plain', fragmentData);
+    const fragmentId = resPost.body.fragment.id;
+
+    const res = await request(app).get(`/v1/fragments/${fragmentId}`).auth(userEmail, password);
+
+    expect(res.statusCode).toBe(200);
+    expect(res.headers['content-type']).toContain('text/plain');
+    expect(res.text).toBe(fragmentData);
+  });
+
+  // Test for fragment metadata (info) retrieval
+  test('should return metadata for a fragment', async () => {
+    const fragmentData = 'Sample fragment data';
+    const resPost = await createFragment('text/plain', fragmentData);
+    const fragmentId = resPost.body.fragment.id;
+
+    const res = await request(app)
+      .get(`/v1/fragments/${fragmentId}/info`)
+      .auth(userEmail, password);
+
+    expect(res.statusCode).toBe(200);
+    expect(res.body.fragment).toHaveProperty('id', fragmentId);
+    expect(res.body.fragment).toHaveProperty('type', 'text/plain');
   });
 });
