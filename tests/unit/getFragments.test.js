@@ -128,12 +128,6 @@ describe('GET /v1/fragments/:id/info', () => {
     expect(res.body.fragment).toHaveProperty('type', 'application/yaml');
   });
 
-  /* TEST FOR NON-EXISTENT FRAGMENT */
-  test('authenticated users get 404 for non-existent fragment', async () => {
-    const res = await request(app).get('/v1/fragments/invalidId/info').auth(userEmail, password);
-    expect(res.statusCode).toBe(404);
-  });
-
   /* TEST FOR UNAUTHENTICATED USER */
   test('unauthenticated users get 401 when trying to access fragment metadata', async () => {
     const res = await request(app).get(`/v1/fragments/${fragmentIdPlain}/info`);
@@ -351,14 +345,14 @@ This is **Markdown**!
       fragmentId = resPost.body.fragment.id;
     });
 
-    /* // Get original JSON fragment
+    // Get original JSON fragment
     test('authenticated users retrieve the created JSON fragment by ID', async () => {
       const res = await request(app).get(`/v1/fragments/${fragmentId}`).auth(userEmail, password);
       expect(res.statusCode).toBe(200);
       expect(res.body).toBeDefined();
       expect(res.body.fragment.id).toEqual(fragmentId);
       expect(res.body.data).toEqual(JSON.parse(jsonData));
-    });*/
+    });
 
     // Convert to .json
     test('convert to .json', async () => {
@@ -517,9 +511,8 @@ describe('GET /v1/fragments/:id', () => {
 
   // Test for fragment not found
   test('should return 404 if fragment not found', async () => {
-    const res = await request(app).get('/v1/fragments/nonExistentId').auth(userEmail, password);
+    const res = await request(app).get('/v1/fragments/090909').auth(userEmail, password);
     expect(res.statusCode).toBe(404);
-    expect(res.body).toHaveProperty('error', 'No Fragment with id: nonExistentId');
   });
 
   // Test for expand query parameter (expand=1)

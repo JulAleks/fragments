@@ -1,48 +1,17 @@
-// src/routes/api/getFragments.js
 const { createSuccessResponse, createErrorResponse } = require('../../response');
 const { Fragment } = require('../../model/fragment');
 const logger = require('../../logger');
 const { convertFragment } = require('../../../src/utils/conversion');
+
 /**
  * Get a list of fragments for the current user
  */
 module.exports.getFragments = async (req, res) => {
   try {
-    let { id } = req.params;
-    let ext;
-    const isInfoRequest = req.path.endsWith('/info');
-
     // Handle the case where no fragment ID is provided
-    if (!id) {
-      const expand = req.query.expand === '1';
-      const fragments = await Fragment.byUser(req.user, expand);
-      return res.status(200).json(createSuccessResponse({ fragments }));
-    }
-
-    // Get the fragment by ID
-    const fragment = await Fragment.byId(req.user, id);
-    if (!fragment) {
-      return res.status(404).json(createErrorResponse(404, 'Fragment not found'));
-    }
-
-    // Handle info request
-    if (isInfoRequest) {
-      return res.status(200).json(createSuccessResponse({ metadata: fragment }));
-    }
-
-    // Handle file extension conversion
-    if (ext) {
-      // Call convertFragment to handle the conversion logic
-      const { convertedData, newMimeType } = convertFragment(fragment.data, fragment.mimeType, ext);
-
-      // Return the converted data
-      res.setHeader('Content-Type', newMimeType);
-      return res.status(200).send(convertedData);
-    }
-
-    // Return the fragment's original data
-    res.type(fragment.type);
-    return res.send(fragment.data);
+    const expand = req.query.expand === '1';
+    const fragments = await Fragment.byUser(req.user, expand);
+    return res.status(200).json(createSuccessResponse({ fragments }));
   } catch (error) {
     logger.error('Error in GET route:', error);
     return res.status(500).json(createErrorResponse(500, error.message));
@@ -50,26 +19,47 @@ module.exports.getFragments = async (req, res) => {
 };
 
 /**
- * Get a specific fragment by ID for the current user, check if conversion needed if so, use the helper fucntion to convert
+ * Get a specific fragment by ID for the current user
  */
-
-module.exports.getFragmentById = async (req, res) => {
+/*module.exports.getFragmentById = async (req, res) => {
   try {
     const { id } = req.params;
     const userID = req.user;
 
-    // Split the raw id into actual id and extension
-    const [newID, ext] = id.split('.');
+    console.log('Original ID from request:', id);
+    console.log('User ID:', userID);
 
-    const userFrag = await Fragment.byUser(userID); // Get all the user's fragments
-    if (!userFrag.includes(newID)) {
-      return createErrorResponse(res.status(404).json({ error: `No Fragment with id: ${newID}` }));
+    // Split the raw ID into the actual ID and extension
+    const [newID, ext] = id.split('.');
+    console.log('ID after splitting:', newID);
+    console.log('Extension after splitting:', ext);
+
+    // Validate the ID format (if it should be a UUID, for example)
+    const uuidRegex =
+      /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
+    if (!uuidRegex.test(newID)) {
+      console.log('Invalid ID format:', newID);
+      return res.status(400).json(createErrorResponse(400, `Invalid ID format: ${newID}`));
     }
 
-    const fragment = await Fragment.byId(userID, newID);
-    const fData = await fragment.getData(); // Fetch the fragment's raw data
+    // Attempt to retrieve the fragment
+    let fragment = await Fragment.byId(userID, newID);
+    console.log('Retrieved fragment:', fragment);
 
-    // Handle conversion if extension is provided
+    if (!fragment) {
+      console.log(`Fragment with ID ${newID} not found`);
+      return res.status(404).json(createErrorResponse(404, `Fragment with ID ${newID} not found`));
+    }
+
+    // Handle info request (if the path ends with '/info')
+    if (req.path.endsWith('/info')) {
+      return res.status(200).json(createSuccessResponse({ metadata: fragment }));
+    }
+
+    // Fetch the fragment's raw data
+    const fData = await fragment.getData();
+
+    // Handle conversion if an extension is provided
     if (ext) {
       const { convertedData, newMimeType } = convertFragment(fData, fragment.mimeType, ext);
       res.setHeader('Content-Type', newMimeType);
@@ -80,32 +70,101 @@ module.exports.getFragmentById = async (req, res) => {
     res.setHeader('Content-Type', fragment.mimeType);
     return res.status(200).send(fData);
   } catch (error) {
-    logger.error('Server error', error.message);
-    res.status(500).json(createErrorResponse(500, error.message));
+    logger.error('Server error:', error.message);
+    return res.status(500).json(createErrorResponse(500, error.message));
+  }
+};*/
+module.exports.getFragmentById = async (req, res) => {
+  const tempID = req.params.id; // Get the raw id passed
+  const userID = req.user; // Get user
+
+  // Split the raw id into actual id and extension if provided
+  const [newID, ext] = tempID.split('.');
+
+  try {
+    // Get all the user's fragments to verify existence
+    const userFragments = await Fragment.byUser(userID);
+
+    if (!userFragments.includes(newID)) {
+      logger.error(`No Fragment with ID: ${newID} found for the user.`);
+      return res.status(404).json(createErrorResponse(404, `No Fragment with ID: ${newID} found`));
+    }
+
+    const fragment = await Fragment.byId(userID, newID);
+    const fragmentData = await fragment.getData(); // Fetch the fragment's raw data
+
+    // If no extension, return based on fragment type
+    if (!ext) {
+      const [type, subtype] = fragment.type.split('/');
+
+      if (type === 'application') {
+        switch (subtype) {
+          case 'json':
+            res.setHeader('Content-Type', 'application/json');
+            return res.status(200).json(
+              createSuccessResponse({
+                fragment: { id: fragment.id, type: fragment.type },
+                data: JSON.parse(fragmentData.toString()),
+              })
+            );
+          case 'yaml':
+            res.setHeader('Content-Type', 'application/yaml');
+            return res.status(200).send(fragmentData.toString());
+          default:
+            logger.error(`Unsupported application subtype: ${subtype}`);
+            return res
+              .status(415)
+              .json(createErrorResponse(415, `Unsupported application subtype: ${subtype}`));
+        }
+      }
+
+      if (type === 'text') {
+        res.setHeader('Content-Type', fragment.mimeType);
+        return res.status(200).send(fragmentData.toString());
+      }
+
+      // Default case for raw data
+      res.setHeader('Content-Type', fragment.mimeType);
+      return res.status(200).send(fragmentData);
+    }
+
+    // If an extension is provided, check if conversion is supported
+    if (!Fragment.isSupportedType(fragment.mimeType)) {
+      logger.error(`Cannot convert from ${fragment.mimeType} to ${ext}`);
+      return res
+        .status(415)
+        .json(createErrorResponse(415, `Cannot convert from ${fragment.mimeType} to ${ext}`));
+    }
+
+    // Perform conversion
+    const { convertedData, newMimeType } = convertFragment(fragmentData, fragment.mimeType, ext);
+    res.setHeader('Content-Type', newMimeType);
+    return res.status(200).send(convertedData);
+  } catch (error) {
+    logger.error('Server error:', error.message);
+    return res.status(500).json(createErrorResponse(500, error.message));
   }
 };
 
 /**
  * Get data and content for a specific fragment by ID for the current user
  */
-
 module.exports.getFragmentDataById = async (req, res) => {
   try {
     const ownerId = req.user;
     const { id } = req.params;
     const fragment = await Fragment.byId(ownerId, id);
 
-    logger.info(`Fetching fragment ID: ${id}`); //not logging user id for security
+    logger.info(`Fetching fragment ID: ${id}`); // Not logging user ID for security
 
     if (!fragment) {
       logger.warn('Fragment not found');
-      return res.status(404).json({ error: 'Fragment not found' });
+      return res.status(404).json(createErrorResponse(404, 'Fragment not found'));
     }
 
-    res.status(200).json(createSuccessResponse({ fragment }));
-    res.status(200).send(fragment.data);
+    return res.status(200).json(createSuccessResponse({ fragment }));
   } catch (error) {
     logger.error(`Failed to fetch fragment: ${error}`);
-    res.status(404).json(createErrorResponse(404, error.message));
+    return res.status(500).json(createErrorResponse(500, error.message));
   }
 };
