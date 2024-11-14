@@ -76,7 +76,7 @@ const postFragment = async (req, res) => {
     const location = `${process.env.API_URL || `http://${req.headers.host}`}/fragments/${fragment.id}`;
 
     // Respond with the created fragment
-    res.status(201).location(location).json({ fragment });
+    res.status(201).location(location).json({ status: 'ok', fragment });
   } catch (err) {
     // Log any errors encountered
     logger.error(`Error creating fragment: ${err.message}`);
