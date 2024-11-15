@@ -18,6 +18,7 @@ const rawBody = () =>
       return Fragment.isSupportedType(type);
     },
   });
+
 const postFragment = async (req, res) => {
   try {
     // Log the request start
@@ -72,10 +73,10 @@ const postFragment = async (req, res) => {
     // Log success
     logger.info(`Fragment created successfully with ID: ${fragment.id}`);
 
-    // Configuring fragment microservice's URL
-    const location = `${process.env.API_URL || `http://${req.headers.host}`}/fragments/${fragment.id}`;
+    // Update the Location header to include the `/v1` prefix
+    const location = `${process.env.API_URL || `http://${req.headers.host}`}/v1/fragments/${fragment.id}`;
 
-    // Respond with the created fragment
+    // Set the Location header and respond with the created fragment
     res.status(201).location(location).json({ status: 'ok', fragment });
   } catch (err) {
     // Log any errors encountered
