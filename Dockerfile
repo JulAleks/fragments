@@ -66,7 +66,7 @@ FROM builder AS deploy
 EXPOSE 8080
 
 # Switch to the node user
-USER node
+# USER node
 
 # Start the container by running the server
 CMD ["npm", "start"]
