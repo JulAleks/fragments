@@ -1,7 +1,5 @@
 {
-  "ipcMode": null,
-  "executionRoleArn": "arn:aws:iam::233637840829:role/LabRole",
-  "taskRoleArn": "arn:aws:iam::233637840829:role/LabRole",
+  "family": "fragments-task",
   "containerDefinitions": [
     {
       "name": "fragments-container",
@@ -20,12 +18,20 @@
       "essential": true,
       "environment": [
         {
+          "name": "NODE_ENV",
+          "value": "production"
+        },
+        {
           "name": "LOG_LEVEL",
           "value": "info"
         },
         {
-          "name": "NODE_ENV",
-          "value": "production"
+          "name": "API_URL",
+          "value": "http://fragments-lb-1147367391.us-east-1.elb.amazonaws.com/"
+        },
+        {
+          "name": "HTPASSWD_FILE",
+          "value": "tests/.htpasswd"
         },
         {
           "name": "AWS_COGNITO_USER_POOL_ID",
@@ -48,15 +54,18 @@
         "logDriver": "awslogs",
         "options": {
           "awslogs-group": "/ecs/fragments-task",
-          "awslogs-region": "us-east-1",
-          "awslogs-stream-prefix": "ecs"
+          "awslogs-stream-prefix": "ecs",
+          "awslogs-region": "us-east-1"
         }
       }
     }
   ],
-  "family": "fragments-task",
-  "requiresCompatibilities": ["FARGATE"],
+  "ipcMode": null,
+  "executionRoleArn": "arn:aws:iam::233637840829:role/LabRole",
+  "taskRoleArn": "arn:aws:iam::233637840829:role/LabRole",
   "networkMode": "awsvpc",
   "cpu": "256",
-  "memory": "512"
+  "memory": "512",
+  "requiresCompatibilities": ["FARGATE"],
+  "revision": 2
 }
