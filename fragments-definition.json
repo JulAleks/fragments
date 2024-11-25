@@ -18,6 +18,14 @@
       "essential": true,
       "environment": [
         {
+          "name": "AWS_COGNITO_CLIENT_ID",
+          "value": "4g2uuicfkc1qpl991s5g6j8j7c"
+        },
+        {
+          "name": "AWS_COGNITO_POOL_ID",
+          "value": "us-east-1_Q2Kdk5aI3"
+        },
+        {
           "name": "NODE_ENV",
           "value": "development"
         },
