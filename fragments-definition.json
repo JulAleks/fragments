@@ -10,7 +10,7 @@
         {
           "name": "fragments-container-80-tcp",
           "containerPort": 80,
-          "hostPort": 80,
+          "hostPort": 0,
           "protocol": "tcp",
           "appProtocol": "http"
         }
@@ -19,31 +19,19 @@
       "environment": [
         {
           "name": "NODE_ENV",
-          "value": "production"
+          "value": "development"
+        },
+        {
+          "name": "PORT",
+          "value": "80"
         },
         {
           "name": "LOG_LEVEL",
-          "value": "info"
-        },
-        {
-          "name": "API_URL",
-          "value": "http://fragments-lb-1147367391.us-east-1.elb.amazonaws.com/"
+          "value": "debug"
         },
         {
           "name": "HTPASSWD_FILE",
           "value": "tests/.htpasswd"
-        },
-        {
-          "name": "AWS_COGNITO_USER_POOL_ID",
-          "value": "${{ secrets.AWS_COGNITO_USER_POOL_ID }}"
-        },
-        {
-          "name": "AWS_COGNITO_CLIENT_ID",
-          "value": "${{ secrets.AWS_COGNITO_CLIENT_ID }}"
-        },
-        {
-          "name": "AWS_COGNITO_REGION",
-          "value": "${{ secrets.AWS_COGNITO_REGION }}"
         },
         {
           "name": "AWS_S3_BUCKET_NAME",
@@ -54,18 +42,20 @@
         "logDriver": "awslogs",
         "options": {
           "awslogs-group": "/ecs/fragments-task",
-          "awslogs-stream-prefix": "ecs",
-          "awslogs-region": "us-east-1"
+          "mode": "non-blocking",
+          "awslogs-create-group": "true",
+          "max-buffer-size": "25m",
+          "awslogs-region": "us-east-1",
+          "awslogs-stream-prefix": "ecs"
         }
       }
     }
   ],
-  "ipcMode": null,
-  "executionRoleArn": "arn:aws:iam::233637840829:role/LabRole",
   "taskRoleArn": "arn:aws:iam::233637840829:role/LabRole",
+  "executionRoleArn": "arn:aws:iam::233637840829:role/LabRole",
   "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
   "cpu": "256",
   "memory": "512",
-  "requiresCompatibilities": ["FARGATE"],
   "revision": 2
 }

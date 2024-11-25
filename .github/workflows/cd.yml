@@ -10,12 +10,15 @@ jobs:
     name: AWS
     runs-on: ubuntu-latest
     steps:
+      # Step 1: Checkout the code
       - name: Check out code
         uses: actions/checkout@v4
 
+      # Step 2: Set up Docker Buildx for building images
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
+      # Step 3: Configure AWS credentials securely using GitHub Secrets
       - name: Configure AWS Credentials using Secrets
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -24,10 +27,12 @@ jobs:
           aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
           aws-region: us-east-1
 
+      # Step 4: Login to Amazon ECR
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
+      # Step 5: Build and Push Docker image to Amazon ECR with version tag and 'latest'
       - name: Build and push to Amazon ECR
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
@@ -38,6 +43,7 @@ jobs:
           push: true
           tags: ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPO }}:${{ env.VERSION_TAG }}, ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPO }}:latest
 
+      # Step 6: Update ECS task definition to use the new image tag
       - name: Fill in the new image ID in the Amazon ECS task definition
         id: update-task-def
         uses: aws-actions/amazon-ecs-render-task-definition@v1
@@ -48,6 +54,7 @@ jobs:
         with:
           task-definition: fragments-definition.json
           container-name: fragments-container
+          # Use the image we just built and pushed to ECR for this tag
           image: ${{ env.ECR_REGISTRY }}/${{ env.ECR_REPO }}:${{ env.VERSION_TAG }}
           environment-variables: |
             LOG_LEVEL=info
@@ -59,6 +66,7 @@ jobs:
             AWS_COGNITO_REGION=${{ secrets.AWS_COGNITO_REGION }}
             AWS_S3_BUCKET_NAME=jalekseev-fragments
 
+      # Step 7: Deploy the updated ECS task definition
       - name: Deploy Amazon ECS task definition
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
         with:
