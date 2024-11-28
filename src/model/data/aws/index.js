@@ -11,12 +11,7 @@ const s3Client = require('./s3Client');
 const { PutObjectCommand, GetObjectCommand, DeleteObjectCommand } = require('@aws-sdk/client-s3');
 
 const ddbDocClient = require('./ddbDocClient');
-const {
-  PutCommand,
-  GetCommand,
-  QueryCommand,
-  DeleteItemCommand,
-} = require('@aws-sdk/lib-dynamodb');
+const { PutCommand, GetCommand, QueryCommand, DeleteCommand } = require('@aws-sdk/lib-dynamodb');
 
 const logger = require('../../../logger');
 
@@ -265,7 +260,7 @@ async function deleteFragment(ownerId, id) {
     TableName: process.env.AWS_DYNAMODB_TABLE_NAME,
     Key: { ownerId, id },
   };
-  const deleteDynamoCommand = new DeleteItemCommand(dynamoParams);
+  const deleteDynamoCommand = new DeleteCommand(dynamoParams);
 
   try {
     logger.info(`Deleting fragment ${id} owned by ${ownerId}`);

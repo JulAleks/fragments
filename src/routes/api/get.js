@@ -13,7 +13,7 @@ module.exports.getFragments = async (req, res) => {
     const fragments = await Fragment.byUser(req.user, expand);
     return res.status(200).json(createSuccessResponse({ fragments }));
   } catch (error) {
-    logger.error('Error in GET route:', error);
+    logger.error(error, 'Error in GET route:');
     return res.status(500).json(createErrorResponse(500, error.message));
   }
 };
