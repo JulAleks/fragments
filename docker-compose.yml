@@ -21,9 +21,12 @@ services:
       # something else is defined in the env.
       - AWS_S3_BUCKET_NAME=${AWS_S3_BUCKET_NAME:-fragments}
       - AWS_DYNAMODB_TABLE_NAME=${AWS_DYNAMODB_TABLE_NAME:-fragments}
+      #- AWS_COGNITO_POOL_ID=us-east-1_Q2Kdk5aI3
+      #- AWS_COGNITO_CLIENT_ID=4g2uuicfkc1qpl991s5g6j8j7c
       - AWS_ACCESS_KEY_ID=test
       - AWS_SECRET_ACCESS_KEY=test
       - AWS_SESSION_TOKEN=test
+
     # Ports to publish
     ports:
       - '8080:8080'
@@ -35,13 +38,13 @@ services:
       - '8000:8000'
     # Run the database in memory, see:
     # https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/DynamoDBLocal.UsageNotes.html
-    command: ['-jar', 'DynamoDBLocal.jar', '-inMemory']
-    # LocalStack for S3, see https://docs.localstack.cloud/get-started/#docker-compose
-    # Interact via awscli-local, see https://docs.localstack.cloud/integrations/aws-cli/#installation
     environment:
       - AWS_ACCESS_KEY_ID=test
       - AWS_SECRET_ACCESS_KEY=test
       - AWS_SESSION_TOKEN=test
+    command: ['-jar', 'DynamoDBLocal.jar', '-inMemory']
+  # LocalStack for S3, see https://docs.localstack.cloud/get-started/#docker-compose
+  # Interact via awscli-local, see https://docs.localstack.cloud/integrations/aws-cli/#installation
   localstack:
     # https://hub.docker.com/r/localstack/localstack
     image: localstack/localstack
