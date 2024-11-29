@@ -20,7 +20,7 @@ services:
       # local-aws-setup.sh. We'll default to 'fragments' as the name, unless
       # something else is defined in the env.
       - AWS_S3_BUCKET_NAME=${AWS_S3_BUCKET_NAME:-fragments}
-      - AWS_DYNAMODB_TABLE_NAME=${AWS_DYNAMODB_TABLE_NAME:-fragments}
+      - AWS_DYNAMODB_TABLE_NAME=fragments
       #- AWS_COGNITO_POOL_ID=us-east-1_Q2Kdk5aI3
       #- AWS_COGNITO_CLIENT_ID=4g2uuicfkc1qpl991s5g6j8j7c
       - AWS_ACCESS_KEY_ID=test
