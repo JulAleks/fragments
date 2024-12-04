@@ -50,10 +50,6 @@
           "value": "jalekseev-fragments"
         },
         {
-          "name": "AWS_S3_BUCKET_NAME",
-          "value": "jalekseev-fragments"
-        },
-        {
           "name": "AWS_DYNAMODB_TABLE_NAME",
           "value": "fragments"
         }

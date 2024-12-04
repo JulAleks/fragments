@@ -58,4 +58,49 @@ describe('convertFragment', () => {
     expect(result.convertedData).toEqual(yamlData);
     expect(result.newMimeType).toBe('application/yaml');
   });
+
+  // Test for unsupported extension
+  test('returns undefined for unsupported extension', () => {
+    const result = convertFragment('test data', 'text/plain', 'unsupported');
+    expect(result.convertedData).toBeUndefined();
+    expect(result.newMimeType).toBeUndefined();
+  });
+
+  // Test for missing mimeType
+  test('throws an error if mimeType is missing', () => {
+    expect(() => convertFragment('test data', null, 'txt')).toThrow('Conversion failed');
+  });
+
+  // Test for missing extension
+  test('returns undefined for missing extension', () => {
+    const result = convertFragment('test data', 'text/plain', null);
+    expect(result.convertedData).toBeUndefined();
+    expect(result.newMimeType).toBeUndefined();
+  });
+
+  // Test for invalid JSON conversion
+  test('throws an error for invalid JSON during conversion', () => {
+    const invalidJson = 'invalid-json';
+    expect(() => convertFragment(invalidJson, 'application/json', 'yaml')).toThrow(
+      'Conversion failed'
+    );
+  });
+
+  // Test for invalid YAML conversion
+  test('throws an error for invalid YAML during conversion', () => {
+    const invalidYaml = 'invalid: yaml: string';
+    expect(() => convertFragment(invalidYaml, 'application/yaml', 'json')).toThrow(
+      'Conversion failed'
+    );
+  });
+
+  // Test for unimplemented extensions
+  test('returns undefined for unimplemented image extensions', () => {
+    const extensions = ['png', 'jpeg', 'webp', 'avif', 'gif'];
+    extensions.forEach((ext) => {
+      const result = convertFragment(Buffer.from('binary data'), 'image/png', ext);
+      expect(result.convertedData).toBeUndefined();
+      expect(result.newMimeType).toBeUndefined();
+    });
+  });
 });
