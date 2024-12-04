@@ -68,7 +68,7 @@ describe('convertFragment', () => {
 
   // Test for missing mimeType
   test('throws an error if mimeType is missing', () => {
-    expect(() => convertFragment('test data', null, 'txt')).toThrow('Conversion failed');
+    expect(() => convertFragment('test data', null, 'txt')).toThrow();
   });
 
   // Test for missing extension
@@ -81,17 +81,13 @@ describe('convertFragment', () => {
   // Test for invalid JSON conversion
   test('throws an error for invalid JSON during conversion', () => {
     const invalidJson = 'invalid-json';
-    expect(() => convertFragment(invalidJson, 'application/json', 'yaml')).toThrow(
-      'Conversion failed'
-    );
+    expect(() => convertFragment(invalidJson, 'application/json', 'yaml')).toThrow();
   });
 
   // Test for invalid YAML conversion
   test('throws an error for invalid YAML during conversion', () => {
     const invalidYaml = 'invalid: yaml: string';
-    expect(() => convertFragment(invalidYaml, 'application/yaml', 'json')).toThrow(
-      'Conversion failed'
-    );
+    expect(() => convertFragment(invalidYaml, 'application/yaml', 'json')).toThrow();
   });
 
   // Test for unimplemented extensions

@@ -6,7 +6,7 @@ const logger = require('../logger');
 /**
 Converts fragment data based on the requested extension and MIME type.
 **/
-const convertFragment = (data, mimeType, extension) => {
+const convertFragment = (data, mimeType, extension, res) => {
   let convertedData;
   let newMimeType;
 
@@ -115,9 +115,10 @@ const convertFragment = (data, mimeType, extension) => {
     }
 
     return { convertedData, newMimeType }; // Return converted data and MIME type
-  } catch (error) {
-    logger.error('Error during conversion:', error.message);
-    throw new Error('Conversion failed: ' + error.message);
+  } catch (err) {
+    logger.error('Error during conversion:', err.message);
+    //throw new Error('Conversion failed: ' + error.message);
+    res.status(415).json({ error: 'Unsupported Media Type' });
   }
 };
 

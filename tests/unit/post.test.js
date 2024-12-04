@@ -70,7 +70,6 @@ describe('POST /v1/fragments', () => {
     );
   });
 
-  ////////////LAB 6////////////
   // Should create a JSON and return the created fragment data
   test('Should create a JSON fragment and return the created fragment data', async () => {
     // Fragment metadata
