@@ -179,13 +179,10 @@ class Fragment {
       'text/csv': ['text/csv'],
       'application/json': ['application/json'],
       'application/yaml': ['application/yaml'],
-      /*
-   Currently, supports the above. Others will be added later.
-  'image/png': ['image/png'],
-  'image/jpeg': ['image/jpeg'],
-  'image/webp': ['image/webp'],
-  'image/gif': ['image/gif']
-  */
+      'image/png': ['image/png'],
+      'image/jpeg': ['image/jpeg'],
+      'image/webp': ['image/webp'],
+      'image/gif': ['image/gif'],
     };
     // Return types or empty array
     return supportedFormats[this.mimeType] || [];

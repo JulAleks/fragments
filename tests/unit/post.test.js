@@ -3,6 +3,8 @@
 const request = require('supertest');
 const app = require('../../src/app');
 const hashEmail = require('../../src/hash');
+const fs = require('fs');
+const path = require('path');
 
 // Testing credentials
 const userEmail = 'user1@email.com';
@@ -273,5 +275,104 @@ describe('POST /v1/fragments', () => {
 
     // Check if the Location header is present
     expect(response.headers).toHaveProperty('location');
+  });
+});
+
+// Post IMG test
+describe('POST /v1/fragments with image content types', () => {
+  // Helper function to load mock binary image data
+  const loadMockImageData = (fileName) =>
+    fs.readFileSync(path.join(__dirname, '../mock-images', fileName));
+
+  //Should create a fragment with PNG image and return fragment data
+  test('Should create a fragment with PNG image and return fragment data', async () => {
+    const pngData = loadMockImageData('bubbles-PNG.png');
+
+    const response = await authPostTest(
+      userEmail,
+      password,
+      'image/png',
+      fragment.ownerId,
+      pngData
+    );
+
+    expect(response.statusCode).toBe(201);
+    expect(response.body).toHaveProperty('fragment');
+    expect(response.body.fragment).toEqual(
+      expect.objectContaining({
+        ownerId: fragment.ownerId,
+        type: 'image/png',
+        size: pngData.length,
+      })
+    );
+  });
+
+  //Should create a fragment with JPEG image and return fragment data
+  test('Should create a fragment with JPEG image and return fragment data', async () => {
+    const jpegData = loadMockImageData('Bubbles-JPG.jpg');
+
+    const response = await authPostTest(
+      userEmail,
+      password,
+      'image/jpeg',
+      fragment.ownerId,
+      jpegData
+    );
+
+    expect(response.statusCode).toBe(201);
+    expect(response.body).toHaveProperty('fragment');
+    expect(response.body.fragment).toEqual(
+      expect.objectContaining({
+        ownerId: fragment.ownerId,
+        type: 'image/jpeg',
+        size: jpegData.length,
+      })
+    );
+  });
+
+  //Should create a fragment with WEBP image and return fragment data
+  test('Should create a fragment with WEBP image and return fragment data', async () => {
+    const webpData = loadMockImageData('Bubbles-WEBP.webp');
+
+    const response = await authPostTest(
+      userEmail,
+      password,
+      'image/webp',
+      fragment.ownerId,
+      webpData
+    );
+
+    expect(response.statusCode).toBe(201);
+    expect(response.body).toHaveProperty('fragment');
+    expect(response.body.fragment).toEqual(
+      expect.objectContaining({
+        ownerId: fragment.ownerId,
+        type: 'image/webp',
+        size: webpData.length,
+      })
+    );
+  });
+
+  //Should create a fragment with GIF image and return fragment data
+  test('Should create a fragment with GIF image and return fragment data', async () => {
+    const gifData = loadMockImageData('Bubbles-GIF.gif');
+
+    const response = await authPostTest(
+      userEmail,
+      password,
+      'image/gif',
+      fragment.ownerId,
+      gifData
+    );
+
+    expect(response.statusCode).toBe(201);
+    expect(response.body).toHaveProperty('fragment');
+    expect(response.body.fragment).toEqual(
+      expect.objectContaining({
+        ownerId: fragment.ownerId,
+        type: 'image/gif',
+        size: gifData.length,
+      })
+    );
   });
 });

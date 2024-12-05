@@ -84,7 +84,11 @@ module.exports.getFragmentById = async (req, res) => {
     }
 
     // Perform conversion
-    const { convertedData, newMimeType } = convertFragment(fragmentData, fragment.mimeType, ext);
+    const { convertedData, newMimeType } = await convertFragment(
+      fragmentData,
+      fragment.mimeType,
+      ext
+    );
     res.setHeader('Content-Type', newMimeType);
     return res.status(200).send(convertedData);
   } catch (error) {
