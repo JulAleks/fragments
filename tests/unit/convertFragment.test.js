@@ -155,7 +155,6 @@ describe('convertFragment - Image Tests', () => {
   test('converts JPEG to PNG', async () => {
     const result = await convertFragment(jpegImage, 'image/jpeg', 'png', res);
     expect(result.newMimeType).toBe('image/png');
-    // Additional validation for PNG format can be added if needed
   });
 
   // ***Tests for JPEG***
@@ -168,7 +167,6 @@ describe('convertFragment - Image Tests', () => {
   test('converts PNG to JPEG', async () => {
     const result = await convertFragment(pngImage, 'image/png', 'jpeg', res);
     expect(result.newMimeType).toBe('image/jpeg');
-    // Additional validation for JPEG format can be added if needed
   });
 
   // ***Tests for WebP***
@@ -181,20 +179,18 @@ describe('convertFragment - Image Tests', () => {
   test('converts PNG to WebP', async () => {
     const result = await convertFragment(pngImage, 'image/png', 'webp', res);
     expect(result.newMimeType).toBe('image/webp');
-    // Additional validation for WebP format can be added if needed
   });
 
   // ***Tests for GIF***
   test('returns GIF as-is when MIME type is image/gif', async () => {
     const result = await convertFragment(gifImage, 'image/gif', 'gif', res);
-    expect(result.convertedData).toEqual(gifImage); // Should return the same buffer
+    expect(result.convertedData).toEqual(gifImage);
     expect(result.newMimeType).toBe('image/gif');
   });
 
   test('converts PNG to GIF', async () => {
     const result = await convertFragment(pngImage, 'image/png', 'gif', res);
     expect(result.newMimeType).toBe('image/gif');
-    // Additional validation for GIF format can be added if needed
   });
 
   // ***Invalid Image Conversions***
