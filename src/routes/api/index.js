@@ -13,6 +13,7 @@ const router = express.Router();
 const { postFragment, rawBody } = require('./post');
 const { getFragments, getFragmentById, getFragmentDataById } = require('./get');
 const { deleteFragment } = require('./delete');
+const { editFragment } = require('./put');
 
 // Post
 router.post('/fragments', rawBody(), postFragment);
@@ -24,5 +25,8 @@ router.get('/fragments', getFragments);
 
 // Delete
 router.delete('/fragments/:id', deleteFragment);
+
+// Edit
+router.put('/fragments/:id', rawBody(), editFragment);
 
 module.exports = router;
