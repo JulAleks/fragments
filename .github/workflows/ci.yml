@@ -44,6 +44,9 @@ jobs:
       - name: Run ESLint
         run: npm run lint
 
+      - name: Verify files in mock-images directory
+        run: ls -R tests/mock-images/
+
     # Lint our Dockerfile using Hadolint
   dockerfile-lint:
     name: Dockerfile Lint
