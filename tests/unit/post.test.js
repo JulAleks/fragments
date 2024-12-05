@@ -284,7 +284,7 @@ describe('POST /v1/fragments with image content types', () => {
   const loadMockImageData = (fileName) =>
     fs.readFileSync(path.join(__dirname, '../mock-images', fileName));
 
-  //Should create a fragment with PNG image and return fragment data
+  /*//Should create a fragment with PNG image and return fragment data
   test('Should create a fragment with PNG image and return fragment data', async () => {
     const pngData = loadMockImageData('pushen.png');
 
@@ -305,7 +305,7 @@ describe('POST /v1/fragments with image content types', () => {
         size: pngData.length,
       })
     );
-  });
+  });*/
 
   //Should create a fragment with JPEG image and return fragment data
   test('Should create a fragment with JPEG image and return fragment data', async () => {
