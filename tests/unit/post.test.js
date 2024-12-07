@@ -375,4 +375,27 @@ describe('POST /v1/fragments with image content types', () => {
       })
     );
   });
+
+  //Should create a fragment with AVIF image and return fragment data
+  test('Should create a fragment with AVIF image and return fragment data', async () => {
+    const gifData = loadMockImageData('dog.avif');
+
+    const response = await authPostTest(
+      userEmail,
+      password,
+      'image/avif',
+      fragment.ownerId,
+      gifData
+    );
+
+    expect(response.statusCode).toBe(201);
+    expect(response.body).toHaveProperty('fragment');
+    expect(response.body.fragment).toEqual(
+      expect.objectContaining({
+        ownerId: fragment.ownerId,
+        type: 'image/avif',
+        size: gifData.length,
+      })
+    );
+  });
 });

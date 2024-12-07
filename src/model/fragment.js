@@ -183,6 +183,7 @@ class Fragment {
       'image/jpeg': ['image/jpeg'],
       'image/webp': ['image/webp'],
       'image/gif': ['image/gif'],
+      'image/avif': ['image/avif'],
     };
     // Return types or empty array
     return supportedFormats[this.mimeType] || [];
@@ -206,6 +207,7 @@ class Fragment {
       'image/jpeg': ['image/jpeg'],
       'image/webp': ['image/webp'],
       'image/gif': ['image/gif'],
+      'image/avif': ['image/avif'],
     };
 
     // Extract the MIME type from the value
