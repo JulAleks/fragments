@@ -42,6 +42,8 @@ services:
       - AWS_ACCESS_KEY_ID=test
       - AWS_SECRET_ACCESS_KEY=test
       - AWS_SESSION_TOKEN=test
+      - AWS_COGNITO_POOL_ID=us-east-1_Q2Kdk5aI3
+      - AWS_COGNITO_CLIENT_ID=4g2uuicfkc1qpl991s5g6j8j7c
     command: ['-jar', 'DynamoDBLocal.jar', '-inMemory']
   # LocalStack for S3, see https://docs.localstack.cloud/get-started/#docker-compose
   # Interact via awscli-local, see https://docs.localstack.cloud/integrations/aws-cli/#installation
@@ -60,3 +62,5 @@ services:
       - AWS_ACCESS_KEY_ID=test
       - AWS_SECRET_ACCESS_KEY=test
       - AWS_SESSION_TOKEN=test
+      - AWS_COGNITO_POOL_ID=us-east-1_Q2Kdk5aI3
+      - AWS_COGNITO_CLIENT_ID=4g2uuicfkc1qpl991s5g6j8j7c
