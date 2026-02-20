@@ -45,7 +45,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.9.1",
-    "@orangeopensource/hurl": "^7.1.2",
+    "@orangeopensource/hurl": "^7.1.4",
     "cross-env": "^7.0.3",
     "eslint": "^9.9.1",
     "globals": "^15.9.0",
